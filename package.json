@@ -1,0 +1,25 @@
+{
+  "name": "utra-bridge",
+  "version": "1.0.0",
+  "description": "Bridge Zwave device into Apple HomeKit protocol.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s940503g/UtraBridge.git"
+  },
+  "keywords": [
+    "hap-nodejs",
+    "Zwave",
+    "Avadesign",
+    "HomeKit"
+  ],
+  "author": "Michael Chen <s940503g@hotmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/s940503g/UtraBridge/issues"
+  },
+  "homepage": "https://github.com/s940503g/UtraBridge#readme"
+}
