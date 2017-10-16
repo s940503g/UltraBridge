@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/s940503g/UtraBridge/issues"
   },
-  "homepage": "https://github.com/s940503g/UtraBridge#readme"
+  "homepage": "https://github.com/s940503g/UtraBridge#readme",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "color-temperature": "^0.2.7",
+    "hap-nodejs": "^0.4.33",
+    "xml2json": "^0.11.0"
+  }
 }
