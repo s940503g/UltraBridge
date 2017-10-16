@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/s940503g/UtraBridge/issues"
   },
-  "homepage": "https://github.com/s940503g/UtraBridge#readme"
+  "homepage": "https://github.com/s940503g/UtraBridge#readme",
+  "dependencies": {
+    "color-temperature": "^0.2.7"
+  }
 }
