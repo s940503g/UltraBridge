@@ -22,7 +22,7 @@ app.get('/show_gateway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
 
-app.get('/gateway/add_bridge', function (req, res) {
+app.get('/add_bridge', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
@@ -60,7 +60,7 @@ app.get('/gateway/add_bridge', function (req, res) {
 	}
 });
 
-app.get('/gateway/remove_bridge', function (req, res) {
+app.get('/remove_bridge', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
