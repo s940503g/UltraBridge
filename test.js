@@ -23,74 +23,60 @@ app.get('/show_geteway_list', function (req, res) {
 });
 
 app.get('/gateway/add_bridge', function (req, res) {
+	let acc = req.query.acc;
+	let pwd = req.query.pwd;
+	let mac = req.query.mac;
+	let ip = gateway_list[mac].ip;
 
-	let promise = new Promise(function () {
-		let acc = req.query.acc;
-		let pwd = req.query.pwd;
-		let mac = req.query.mac.replace(/mac=/, '');
-		let ip = gateway_list.filter(function (gw) {
-				return gw.mac === mac;
-		})[0];
+	try {
+		if (!acc || !pwd || !mac)
+			throw {status: 422, msg: 'Required parameter missed.'};
+		else if (!ip)
+			throw {status: 400, msg: 'Gateway not found.'};
+		else if (bridged_gateway[mac])
+			throw {status: 304, msg: 'Gateway ' + mac + ' is already bridged.'};
+		else
+			let gateway = new Gateway(acc, pwd, ip);
 
-		if (!acc || !pwd || !mac) {
-			reject({status: 422, msg: 'Required parameter missed.'});
-		}else{
-			if (!ip) reject({status: 400, msg: 'Gateway not found.'});
+			gateway.publish(pincode, port++, function (err) {
+				if (err) {
+					throw {status: 500, msg: 'Server error.'};
+				} else {
+					gateway_list[mac].bridged = true;
+					console.log('Gateway ' + mac + ' bridged to Apple HomeKit.');
+				}
+			});
 
-			if (bridged_gateway[mac]) {
-
-				reject({status: 304, msg: 'Gateway ' + mac + ' already exists.'});
-
-			}else {
-
-				let gateway = new Gateway(acc, pwd, ip);
-
-				gateway.publish(pincode, port++, function (err) {
-					if (err) {
-						reject({status: 500, msg: 'Server error.'});
-					} else {
-						gateway_list[mac].bridged = true;
-						resolve('Gateway ' + mac + ' bridged to Apple HomeKit.');
-					}
-				});
-			}
-		}
-	});
-
-	promise.then(function (value) {
-		res.status(200).send(value);
-	}, function (reason) {
-		res.status(reason.status).send(reason.msg);
-	});
+	} catch (error) {
+		res.status(error.status).send(error.msg);
+	} finally {
+		res.status(200).send('Success.');
+	}
 });
 
 app.get('/gateway/remove_bridge', function (req, res) {
-	let promise = new Promise(function () {
-		let acc = req.query.acc;
-		let pwd = req.query.pwd;
-		let mac = req.query.mac.replace(/mac=/, '');
-		let ip = gateway_list.filter(function (gw) {
-				return gw.mac === mac;
-		})[0];
-		if (!acc || !pwd || !mac) {
-			reject({status: 422, msg: 'Required parameter missed.'});
-		}else{
+	let acc = req.query.acc;
+	let pwd = req.query.pwd;
+	let mac = req.query.mac;
+	let ip = gateway_list[mac].ip;
 
-			if (!bridged_gateway[mac]) {
-				reject({status: 304, msg: 'Gateway ' + mac + ' not exists.'});
-			} else {
-				bridged_gateway[mac].destroy();
-				resolve('The biridge of the gateway ' + mac + ' removed.');
-			}
+	try {
+		if (!acc || !pwd || !mac)
+			throw {status: 422, msg: 'Required parameter missed.'};
+		else if (!ip)
+			throw {status: 400, msg: 'Gateway not found.'};
+		else if (!bridged_gateway[mac])
+			throw {status: 304, msg: 'Gateway ' + mac + ' not exists.'};
+		else
+			bridged_gateway[mac].destroy();
+			console.log('The biridge of the gateway ' + mac + ' removed.');
 
-		}
-	});
+	} catch (error) {
+		res.status(error.status).send(error.msg);
+	} finally {
+		res.status(200).send('The biridge of the gateway ' + mac + ' removed.');
+	}
 
-	promise.then(function (value) {
-		res.status(200).send(value);
-	}, function (reason) {
-		res.status(reason.status).send(reason.msg);
-	});
 });
 
 app.listen(3000);
@@ -112,15 +98,14 @@ setInterval(function () {
 }, 10000);
 
 server.on('message', function (msg, rinfo) {
-	msg = msg.toString('utf8').split(/&/);
-	let title = msg[0];
-	let mac = msg[1].replace(/mac=/, '');
-	let model = msg[2];
-	let address = rinfo.address;
-
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
+		msg = msg.toString('utf8').split(/&/);
+		let title = msg[0];
+		let mac = msg[1];
+		let model = msg[2];
+		let address = rinfo.address;
 
-		gateway_list[mac] = {
+		gateway_list[mac.replace(/mac=/g, '')] = {
 			ip: address,
 			model: model
 		};
