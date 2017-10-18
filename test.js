@@ -27,6 +27,7 @@ app.get('/add_bridge', function (req, res) {
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
 	let ip;
+
 	if (gateway_list[mac]) {
 		ip = gateway_list[mac].ip;
 	}
@@ -49,7 +50,7 @@ app.get('/add_bridge', function (req, res) {
 
 					bridged_gateway[mac] = gateway;
 
-					console.log('Gateway ' + mac + ' bridged to Apple HomeKit.');
+					console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
 					res.status(200).send('Success.');
 				}
 			});
@@ -79,6 +80,9 @@ app.get('/remove_bridge', function (req, res) {
 		else
 			bridged_gateway[mac].destroy();
 			bridged_gateway[mac] = null;
+
+			if (gateway_list[mac]) gateway_list[mac].bridged = false;
+
 			res.status(200).send('Success');
 
 	} catch (error) {
