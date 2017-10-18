@@ -20,12 +20,12 @@ app.get('/show_geteway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
 
-app.get('/gateway/add_bridge/', function (req, res) {
+app.get('/gateway/add_bridge', function (req, res) {
 
 	let promise = new Promise(function () {
 		let acc = req.query.acc;
 		let pwd = req.query.pwd;
-		let mac = req.query.mac;
+		let mac = req.query.mac.replace(/mac=/, '');
 		let ip = gateway_list.filter(function (gw) {
 				return gw.mac === mac;
 		})[0];
@@ -58,7 +58,7 @@ app.get('/gateway/add_bridge/', function (req, res) {
 	});
 });
 
-app.get('/gateway/remove_bridge/', function (req, res) {
+app.get('/gateway/remove_bridge', function (req, res) {
 	let promise = new Promise(function () {
 		let acc = req.query.acc;
 		let pwd = req.query.pwd;
@@ -111,6 +111,7 @@ server.on('message', function (msg, rinfo) {
 	let title = msg[0];
 	let mac = msg[1];
 	let model = msg[2];
+	let address = rinfo.address;
 
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
 		hap_nodejs.init();
