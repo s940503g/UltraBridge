@@ -18,7 +18,7 @@ let pincode = "222-21-266";
 var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
-app.get('/show_geteway_list', function (req, res) {
+app.get('/show_gateway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
 
@@ -26,16 +26,19 @@ app.get('/gateway/add_bridge', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
-	let ip = gateway_list[mac].ip;
+	let ip;
+	if (gateway_list[mac]) {
+		ip = gateway_list[mac].ip;
+	}
 
 	try {
-		if (!acc || !pwd || !mac)
+		if (!acc || !pwd || !mac){
 			throw {status: 422, msg: 'Required parameter missed.'};
-		else if (!ip)
+		}else if (!ip){
 			throw {status: 400, msg: 'Gateway not found.'};
-		else if (bridged_gateway[mac])
+		}else if (bridged_gateway[mac]){
 			throw {status: 304, msg: 'Gateway ' + mac + ' is already bridged.'};
-		else
+		}else{
 			let gateway = new Gateway(acc, pwd, ip);
 
 			gateway.publish(pincode, port++, function (err) {
@@ -43,14 +46,17 @@ app.get('/gateway/add_bridge', function (req, res) {
 					throw {status: 500, msg: 'Server error.'};
 				} else {
 					gateway_list[mac].bridged = true;
+
+					bridged_gateway[mac] = gateway;
+
 					console.log('Gateway ' + mac + ' bridged to Apple HomeKit.');
+					res.status(200).send('Success.');
 				}
 			});
-
+		}
 	} catch (error) {
-		res.status(error.status).send(error.msg);
-	} finally {
-		res.status(200).send('Success.');
+		console.log(error.msg);
+		res.status(error.status);;
 	}
 });
 
@@ -58,7 +64,10 @@ app.get('/gateway/remove_bridge', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
-	let ip = gateway_list[mac].ip;
+	let ip;
+	if (gateway_list[mac]) {
+		ip = gateway_list[mac].ip;
+	}
 
 	try {
 		if (!acc || !pwd || !mac)
@@ -69,12 +78,12 @@ app.get('/gateway/remove_bridge', function (req, res) {
 			throw {status: 304, msg: 'Gateway ' + mac + ' not exists.'};
 		else
 			bridged_gateway[mac].destroy();
-			console.log('The biridge of the gateway ' + mac + ' removed.');
+			bridged_gateway[mac] = null;
+			res.status(200).send('Success');
 
 	} catch (error) {
-		res.status(error.status).send(error.msg);
-	} finally {
-		res.status(200).send('The biridge of the gateway ' + mac + ' removed.');
+		console.log(error);
+		res.status(error.status);
 	}
 });
 
@@ -97,14 +106,15 @@ setInterval(function () {
 }, 10000);
 
 server.on('message', function (msg, rinfo) {
-	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
-		msg = msg.toString('utf8').split(/&/);
-		let title = msg[0];
-		let mac = msg[1];
-		let model = msg[2];
-		let address = rinfo.address;
+	msg = msg.toString('utf8').split(/&/);
+	let title = msg[0];
+	let mac = msg[1];
+	let model = msg[2];
+	let address = rinfo.address;
 
-		gateway_list[mac.replace(/mac=/g, '')] = {
+	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
+
+		gateway_list[mac.replace(/mac=/g, '').trim()] = {
 			ip: address,
 			model: model
 		};
