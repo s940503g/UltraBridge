@@ -24,15 +24,14 @@ app.get('/show_geteway_list', function (req, res) {
 
 app.get('/gateway/add_bridge', function (req, res) {
 
-	let promise = new Promise(function () {
+	let promise = new Promise(function (resolve, reject) {
 		let acc = req.query.acc;
 		let pwd = req.query.pwd;
-		let mac = req.query.mac.replace(/mac=/, '');
-		let ip = gateway_list.filter(function (gw) {
-				return gw.mac === mac;
-		})[0];
+		let mac = req.query.mac;;
+		let ip = gateway_list[mac].ip;
 
 		if (!acc || !pwd || !mac) {
+			console.log('required parameter missed.');
 			reject({status: 422, msg: 'Required parameter missed.'});
 		}else{
 			if (!ip) reject({status: 400, msg: 'Gateway not found.'});
@@ -57,9 +56,11 @@ app.get('/gateway/add_bridge', function (req, res) {
 		}
 	});
 
-	promise.then(function (value) {
+	promise.then(function (value){ 
+		console.log(value);
 		res.status(200).send(value);
-	}, function (reason) {
+	}).catch(function (reason) {
+		console.log(reason);
 		res.status(reason.status).send(reason.msg);
 	});
 });
@@ -68,10 +69,8 @@ app.get('/gateway/remove_bridge', function (req, res) {
 	let promise = new Promise(function () {
 		let acc = req.query.acc;
 		let pwd = req.query.pwd;
-		let mac = req.query.mac.replace(/mac=/, '');
-		let ip = gateway_list.filter(function (gw) {
-				return gw.mac === mac;
-		})[0];
+		let mac = req.query.mac;
+		let ip = gateway_list[mac].ip; 
 		if (!acc || !pwd || !mac) {
 			reject({status: 422, msg: 'Required parameter missed.'});
 		}else{
@@ -88,7 +87,7 @@ app.get('/gateway/remove_bridge', function (req, res) {
 
 	promise.then(function (value) {
 		res.status(200).send(value);
-	}, function (reason) {
+	}).catch(function (reason) {
 		res.status(reason.status).send(reason.msg);
 	});
 });
@@ -114,13 +113,13 @@ setInterval(function () {
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
 	let title = msg[0];
-	let mac = msg[1].replace(/mac=/, '');
+	let mac = msg[1];
 	let model = msg[2];
 	let address = rinfo.address;
 
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
 
-		gateway_list[mac] = {
+		gateway_list[mac.replace(/mac=/,'')] = {
 			ip: address,
 			model: model
 		};
