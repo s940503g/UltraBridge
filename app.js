@@ -20,7 +20,7 @@ var server = dgram.createSocket('udp4');
 
 app.get('/scan_gateway', function (req, res) {
 	scan_ava_zave_gateway();
-	res.status(200);
+	res.status(200).send('Success');
 });
 
 app.get('/show_gateway_list', function (req, res) {
