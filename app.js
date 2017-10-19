@@ -18,11 +18,16 @@ let pincode = "222-21-266";
 var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
+app.get('/scan_gateway', function (req, res) {
+	scan_ava_zave_gateway();
+	res.status(200);
+});
+
 app.get('/show_gateway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
 
-app.get('/add_bridge', function (req, res) {
+app.get('/add_gateway', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
@@ -46,8 +51,8 @@ app.get('/add_bridge', function (req, res) {
 				if (err) {
 					throw {status: 500, msg: 'Server error.'};
 				} else {
-					gateway_list[mac].bridged = true;
 
+					gateway_list[mac].bridged = true;
 					bridged_gateway[mac] = gateway;
 
 					console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
@@ -61,9 +66,8 @@ app.get('/add_bridge', function (req, res) {
 	}
 });
 
-app.get('/remove_bridge', function (req, res) {
-	let acc = req.query.acc;
-	let pwd = req.query.pwd;
+app.get('/remove_gateway', function (req, res) {
+
 	let mac = req.query.mac;
 	let ip;
 	if (gateway_list[mac]) {
@@ -71,7 +75,7 @@ app.get('/remove_bridge', function (req, res) {
 	}
 
 	try {
-		if (!acc || !pwd || !mac)
+		if (!mac)
 			throw {status: 422, msg: 'Required parameter missed.'};
 		else if (!ip)
 			throw {status: 400, msg: 'Gateway not found.'};
@@ -91,6 +95,19 @@ app.get('/remove_bridge', function (req, res) {
 	}
 });
 
+app.get('/show_bridged_gateway', function (req, res) {
+	var output = {};
+	for (mac in bridged_gateway) {
+		let gw = bridged_gateway[mac]
+		output[mac] = {
+			acc: gw.acc,
+			pwd: gw.pwd,
+			ip: gw.ip
+		}
+	}
+	res.status(200).send(output);
+});
+
 app.listen(3000);
 
 
@@ -98,16 +115,12 @@ socket.bind(function () {
 	socket.setBroadcast(true);
 });
 
-var message = new Buffer('WHOIS_AVA_ZWAVE#');
-socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
-	if (err) console.log(err);
-});
-
-setInterval(function () {
+function scan_ava_zave_gateway () {
+	var message = new Buffer('WHOIS_AVA_ZWAVE#');
 	socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
 		if (err) console.log(err);
 	});
-}, 10000);
+}
 
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
@@ -124,10 +137,12 @@ server.on('message', function (msg, rinfo) {
 		};
 
 	} else if (title.match(/^WHOIS_AVA_BRIDGE#/)) {
+
 		let message = new Buffer('RE_WHOIS_AVA_BRIDGE#');
 		socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
 			if (err) console.log(err);
 		});
+
 	}
 });
 
