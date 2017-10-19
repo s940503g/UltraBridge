@@ -51,8 +51,8 @@ app.get('/add_gateway', function (req, res) {
 				if (err) {
 					throw {status: 500, msg: 'Server error.'};
 				} else {
-					gateway_list[mac].bridged = true;
 
+					gateway_list[mac].bridged = true;
 					bridged_gateway[mac] = gateway;
 
 					console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
@@ -95,9 +95,17 @@ app.get('/remove_gateway', function (req, res) {
 	}
 });
 
-
-app.get('/reset_bridge', function (req, res) {
-
+app.get('/show_bridged_gateway', function (req, res) {
+	var output = {};
+	for (mac in bridged_gateway) {
+		let gw = bridged_gateway[mac]
+		output[mac] = {
+			acc: gw.acc,
+			pwd: gw.pwd,
+			ip: gw.ip
+		}
+	}
+	res.status(200).send(output);
 });
 
 app.listen(3000);
