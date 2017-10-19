@@ -27,7 +27,7 @@ app.get('/show_gateway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
 
-app.get('/add_bridge', function (req, res) {
+app.get('/add_gateway', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
@@ -66,9 +66,8 @@ app.get('/add_bridge', function (req, res) {
 	}
 });
 
-app.get('/remove_bridge', function (req, res) {
-	let acc = req.query.acc;
-	let pwd = req.query.pwd;
+app.get('/remove_gateway', function (req, res) {
+
 	let mac = req.query.mac;
 	let ip;
 	if (gateway_list[mac]) {
@@ -76,7 +75,7 @@ app.get('/remove_bridge', function (req, res) {
 	}
 
 	try {
-		if (!acc || !pwd || !mac)
+		if (!mac)
 			throw {status: 422, msg: 'Required parameter missed.'};
 		else if (!ip)
 			throw {status: 400, msg: 'Gateway not found.'};
@@ -96,6 +95,11 @@ app.get('/remove_bridge', function (req, res) {
 	}
 });
 
+
+app.get('/reset_bridge', function (req, res) {
+
+});
+
 app.listen(3000);
 
 
@@ -109,12 +113,6 @@ function scan_ava_zave_gateway () {
 		if (err) console.log(err);
 	});
 }
-
-// setInterval(function () {
-// 	socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
-// 		if (err) console.log(err);
-// 	});
-// }, 10000);
 
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
