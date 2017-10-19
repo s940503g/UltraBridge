@@ -18,6 +18,11 @@ let pincode = "222-21-266";
 var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
+app.get('/scan_gateway', function (req, res) {
+	scan_ava_zave_gateway();
+	res.status(200);
+});
+
 app.get('/show_gateway_list', function (req, res) {
 	res.status(200).send(gateway_list);
 });
@@ -98,16 +103,18 @@ socket.bind(function () {
 	socket.setBroadcast(true);
 });
 
-var message = new Buffer('WHOIS_AVA_ZWAVE#');
-socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
-	if (err) console.log(err);
-});
-
-setInterval(function () {
+function scan_ava_zave_gateway () {
+	var message = new Buffer('WHOIS_AVA_ZWAVE#');
 	socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
 		if (err) console.log(err);
 	});
-}, 10000);
+}
+
+// setInterval(function () {
+// 	socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
+// 		if (err) console.log(err);
+// 	});
+// }, 10000);
 
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
@@ -124,10 +131,12 @@ server.on('message', function (msg, rinfo) {
 		};
 
 	} else if (title.match(/^WHOIS_AVA_BRIDGE#/)) {
+
 		let message = new Buffer('RE_WHOIS_AVA_BRIDGE#');
 		socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
 			if (err) console.log(err);
 		});
+
 	}
 });
 
