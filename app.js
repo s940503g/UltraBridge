@@ -122,6 +122,8 @@ function scan_ava_zave_gateway () {
 	});
 }
 
+scan_ava_zave_gateway();
+
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
 	let title = msg[0];
