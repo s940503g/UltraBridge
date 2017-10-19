@@ -97,12 +97,12 @@ app.get('/remove_gateway', function (req, res) {
 
 app.get('/show_bridged_gateway', function (req, res) {
 	var output = {};
-	for (mac in bridged_gateway) {
+	for (var mac in bridged_gateway) {
 		let gw = bridged_gateway[mac]
 		output[mac] = {
-			acc: gw.acc,
-			pwd: gw.pwd,
-			ip: gw.ip
+			acc: gw.setting.acc,
+			pwd: gw.setting.pwd,
+			ip: gw.setting.ip
 		}
 	}
 	res.status(200).send(output);
