@@ -5,12 +5,12 @@ const dgram = require('dgram');
 const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
+const GatewayInfo = require('./lib/GatewayInfo.js')
 
 hap_nodejs.init();
 
 var app = express();
 var gateway_list = {};
-var bridged_gateway = {};
 
 var port = 5050;
 let pincode = "222-21-266";
@@ -18,13 +18,37 @@ let pincode = "222-21-266";
 var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
-app.get('/scan_gateway', function (req, res) {
+
+function set_gateway_bridge (acc, pwd, ip, callback) {
+	let gateway = new Gateway(acc, pwd, ip);
+
+	gateway.publish(pincode, port++, function (err) {
+		if (err) {
+			console.log(err);
+			err = {status: 500, msg: 'Error: Server error.'};
+		} else {
+			gateway_list[mac].bridged = true;
+			gateway_list[mac]._gateway = gateway;
+
+			console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
+		}
+		callback(err);
+	});
+}
+
+app.get('/scan', function (req, res) {
 	scan_ava_zave_gateway();
-	res.status(200).send('Success');
+	res.status(200).send('Success.');
 });
 
-app.get('/show_gateway_list', function (req, res) {
-	res.status(200).send(gateway_list);
+app.get('/show_unbridged_gateway_list', function (req, res) {
+	var output;
+	for(var mac in gateway_list )) {
+		if (!gateway_list[mac].bridged) {
+			output[mac] = gateway_list[mac];
+		}
+	}
+	res.status(200).send(output);
 });
 
 app.get('/add_gateway', function (req, res) {
@@ -39,30 +63,20 @@ app.get('/add_gateway', function (req, res) {
 
 	try {
 		if (!acc || !pwd || !mac){
-			throw {status: 422, msg: 'Required parameter missed.'};
+			throw {status: 422, msg: 'Error: Required parameter missed.'};
 		}else if (!ip){
-			throw {status: 400, msg: 'Gateway not found.'};
-		}else if (bridged_gateway[mac]){
-			throw {status: 304, msg: 'Gateway ' + mac + ' is already bridged.'};
+			throw {status: 400, msg: 'Error: Gateway not found.'};
+		}else if (bridged_gateway[mac]) {
+			throw {status: 304, msg: 'Error: Gateway ' + mac + ' is already bridged.'};
 		}else{
-			let gateway = new Gateway(acc, pwd, ip);
-
-			gateway.publish(pincode, port++, function (err) {
-				if (err) {
-					throw {status: 500, msg: 'Server error.'};
-				} else {
-
-					gateway_list[mac].bridged = true;
-					bridged_gateway[mac] = gateway;
-
-					console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
-					res.status(200).send('Success.');
-				}
+			set_gateway_bridge(acc, pwd, ip, (err) => {
+				if (err) throw err;
+				res.status(200).send("Success.");
 			});
 		}
 	} catch (error) {
 		console.log(error.msg);
-		res.status(error.status);;
+		res.status(error.status).send(error.msg);;
 	}
 });
 
@@ -76,14 +90,18 @@ app.get('/remove_gateway', function (req, res) {
 
 	try {
 		if (!mac)
-			throw {status: 422, msg: 'Required parameter missed.'};
+			throw {status: 422, msg: 'Error: Required parameter missed.'};
 		else if (!ip)
-			throw {status: 400, msg: 'Gateway not found.'};
+			throw {status: 400, msg: 'Error: Gateway not found.'};
 		else if (!bridged_gateway[mac])
-			throw {status: 304, msg: 'Gateway ' + mac + ' not exists.'};
+			throw {status: 304, msg: 'Error: Gateway ' + mac + ' not exists.'};
 		else
-			bridged_gateway[mac].destroy();
-			bridged_gateway[mac] = null;
+			gateway_list[mac]._gateway.destroy(function (err) {
+				if (err) throw {status: 400, msg: err};
+				gateway_list[mac]._info.remove();
+				gateway_list[mac]._info = undefined;
+			});
+			delete gateway_list[mac]._gateway;
 
 			if (gateway_list[mac]) gateway_list[mac].bridged = false;
 
@@ -91,18 +109,16 @@ app.get('/remove_gateway', function (req, res) {
 
 	} catch (error) {
 		console.log(error);
-		res.status(error.status);
+		res.status(error.status).send(error.msg);
 	}
 });
 
 app.get('/show_bridged_gateway', function (req, res) {
-	var output = {};
-	for (var mac in bridged_gateway) {
-		let gw = bridged_gateway[mac]
-		output[mac] = {
-			acc: gw.setting.acc,
-			pwd: gw.setting.pwd,
-			ip: gw.setting.ip
+	var output;
+	for (var mac in gateway_list) {
+		let gw = gateway_list[mac]._gateway;
+		if (gw) {
+			output[mac] = {acc: gw.setting.acc, ip: gw.setting.ip, mac: mac};
 		}
 	}
 	res.status(200).send(output);
@@ -129,14 +145,19 @@ server.on('message', function (msg, rinfo) {
 	let title = msg[0];
 	let mac = msg[1];
 	let model = msg[2];
-	let address = rinfo.address;
+	let ip = rinfo.address;
 
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
+		let mac = mac.replace(/mac=/g, '').trim()
+		var info = GatewayInfo.load(mac);
+		if (!info) {
+			info = GatewayInfo.create(mac);
+			info.ip = ip;
+			info.model = model;
+			console.log('Add gateway ' + mac + ' info.')
+		}
 
-		gateway_list[mac.replace(/mac=/g, '').trim()] = {
-			ip: address,
-			model: model
-		};
+		gateway_list[mac] = { _info: info };
 
 	} else if (title.match(/^WHOIS_AVA_BRIDGE#/)) {
 
