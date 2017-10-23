@@ -19,7 +19,9 @@ var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
 
-function set_gateway_bridge (acc, pwd, ip, callback) {
+function set_gateway_bridge (info, callback) {
+	let {acc, pwd, ip, mac} = info;
+	
 	let gateway = new Gateway(acc, pwd, ip);
 
 	gateway.publish(pincode, port++, function (err) {
@@ -27,8 +29,8 @@ function set_gateway_bridge (acc, pwd, ip, callback) {
 			debug(err);
 			err = {status: 500, msg: 'Error: Server error.'};
 		} else {
-			gateway_list[mac].bridged = true;
-			gateway_list[mac]._gateway = gateway;
+			info._gateway = gateway;
+			info.save();
 
 			debug('Gateway ' + mac + ' bridge to Apple HomeKit.');
 		}
@@ -38,6 +40,7 @@ function set_gateway_bridge (acc, pwd, ip, callback) {
 
 app.get('/scan', function (req, res) {
 	scan_ava_zave_gateway();
+
 	res.status(200).send('Success.');
 });
 
@@ -57,23 +60,24 @@ app.get('/add_gateway', function (req, res) {
 	let acc = req.query.acc;
 	let pwd = req.query.pwd;
 	let mac = req.query.mac;
-	let ip;
 
-	if (gateway_list[mac]) {
-		ip = gateway_list[mac].ip;
-	}
+	let info = gateway_list[mac]._info;
+	let ip = info.ip;
 
 	try {
 		if (!acc || !pwd || !mac){
-			throw {status: 422, msg: 'Error: Required parameter missed.'};
+			throw {status: 422, msg: 'Error: Required parameter missed.\n'};
 		}else if (!ip){
-			throw {status: 400, msg: 'Error: Gateway not found.'};
-		}else if (bridged_gateway[mac]) {
-			throw {status: 304, msg: 'Error: Gateway ' + mac + ' is already bridged.'};
+			throw {status: 400, msg: 'Error: Gateway not found.\n'};
+		}else if (gateway_list[mac]._gateway) {
+			throw {status: 304, msg: 'Error: Gateway ' + mac + ' is already bridged.\n'};
 		}else{
-			set_gateway_bridge(acc, pwd, ip, (err) => {
+			info.acc = acc;
+			info.pwd = pwd;
+			set_gateway_bridge(info, (err) => {
 				if (err) throw err;
-				res.status(200).send("Success.");
+				info.save();
+				res.status(200).send("Success.\n");
 			});
 		}
 	} catch (error) {
@@ -160,10 +164,10 @@ server.on('message', function (msg, rinfo) {
 			info.ip = ip;
 			info.model = model.replace(/model=/g, '').trim();;
 			info.mac = mac;
-			debug('Add gateway ' + mac + ' info.')
+			debug('Add gateway ' + mac + ' ip: ' + ip + ', model: ' + model);
 			info.save();
 		} else if (info.ip != ip) {
-			debug('Reload the gateway'+ mac +' IP address.');
+			debug('Reload the gateway '+ mac +' IP address: ' + ip);
 			info.ip = ip;
 			info.save();
 		}
