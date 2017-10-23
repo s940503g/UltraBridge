@@ -29,7 +29,10 @@ function reset_all_gateway_bridge () {
 		let info = gateway_list[mac]._info;
 		let gw = gateway_list[mac]._gateway;
 
-		gw.destroy();
+		if (gw) {
+			gw.destroy();
+		}
+
 		set_gateway_bridge(info, (err) => {
 			if (err) throw err;
 			info.save();
