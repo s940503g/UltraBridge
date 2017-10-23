@@ -179,7 +179,6 @@ server.on('message', function (msg, rinfo) {
 		mac = mac.replace(/mac=/g, '').trim()
 
 		var info = GatewayInfo.load(mac);
-		gateway_list[mac] = { _info: info };
 
 		if (!info) {
 			info = GatewayInfo.create(mac);
@@ -193,6 +192,9 @@ server.on('message', function (msg, rinfo) {
 			info.ip = ip;
 			info.save();
 		}
+
+		gateway_list[mac] = { _info: info };
+
 	} else if (title.match(/^WHOIS_AVA_BRIDGE#/)) {
 
 		let message = new Buffer('RE_WHOIS_AVA_BRIDGE#');
