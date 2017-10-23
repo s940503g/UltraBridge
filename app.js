@@ -24,13 +24,13 @@ function set_gateway_bridge (acc, pwd, ip, callback) {
 
 	gateway.publish(pincode, port++, function (err) {
 		if (err) {
-			console.log(err);
+			debug(err);
 			err = {status: 500, msg: 'Error: Server error.'};
 		} else {
 			gateway_list[mac].bridged = true;
 			gateway_list[mac]._gateway = gateway;
 
-			console.log('Gateway ' + mac + ' bridge to Apple HomeKit.');
+			debug('Gateway ' + mac + ' bridge to Apple HomeKit.');
 		}
 		callback(err);
 	});
@@ -75,7 +75,7 @@ app.get('/add_gateway', function (req, res) {
 			});
 		}
 	} catch (error) {
-		console.log(error.msg);
+		debug(error.msg);
 		res.status(error.status).send(error.msg);;
 	}
 });
@@ -108,7 +108,7 @@ app.get('/remove_gateway', function (req, res) {
 			res.status(200).send('Success');
 
 	} catch (error) {
-		console.log(error);
+		debug(error);
 		res.status(error.status).send(error.msg);
 	}
 });
@@ -134,7 +134,7 @@ socket.bind(function () {
 function scan_ava_zave_gateway () {
 	var message = new Buffer('WHOIS_AVA_ZWAVE#');
 	socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
-		if (err) console.log(err);
+		if (err) debug(err);
 	});
 }
 
@@ -149,21 +149,26 @@ server.on('message', function (msg, rinfo) {
 
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
 		let mac = mac.replace(/mac=/g, '').trim()
+
 		var info = GatewayInfo.load(mac);
+		gateway_list[mac] = { _info: info };
+
 		if (!info) {
 			info = GatewayInfo.create(mac);
 			info.ip = ip;
 			info.model = model;
-			console.log('Add gateway ' + mac + ' info.')
+			debug('Add gateway ' + mac + ' info.')
+			info.save();
+		} else if (info.ip != ip) {
+			debug('Reload the gateway'+ mac +' IP address.');
+			info.ip = ip;
+			info.save();
 		}
-
-		gateway_list[mac] = { _info: info };
-
 	} else if (title.match(/^WHOIS_AVA_BRIDGE#/)) {
 
 		let message = new Buffer('RE_WHOIS_AVA_BRIDGE#');
 		socket.send(message, 0, message.length, 10000, '255.255.255.255', function (err, bytes) {
-			if (err) console.log(err);
+			if (err) debug(err);
 		});
 
 	}
