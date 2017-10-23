@@ -18,9 +18,9 @@ let pincode = "222-21-266";
 var socket = dgram.createSocket('udp4');
 var server = dgram.createSocket('udp4');
 
-setInterval(() => {
-	reset_all_gateway_bridge();
-}, 1000 * 30);
+// setInterval(() => {
+// 	reset_all_gateway_bridge();
+// }, 1000 * 30);
 
 function reset_all_gateway_bridge () {
 	scan_ava_zave_gateway();
@@ -97,6 +97,7 @@ app.get('/add_gateway', function (req, res) {
 			info.pwd = pwd;
 			set_gateway_bridge(info, (err) => {
 				if (err) throw err;
+				info.bridged = true;
 				info.save();
 				res.status(200).send("Success.\n");
 			});
@@ -187,7 +188,7 @@ server.on('message', function (msg, rinfo) {
 			debug('Add gateway ' + mac + ' ip: ' + ip + ', model: ' + model);
 			info.save();
 		} else if (info.ip != ip) {
-			debug('Reload the gateway '+ mac +' IP address: ' + ip);
+			debug('Reload the gateway '+ mac +' IP address: ' + ip + 'bridged: ' + info.bridged);
 			info.ip = ip;
 			info.save();
 		}
