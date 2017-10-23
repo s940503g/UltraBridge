@@ -31,12 +31,11 @@ function reset_all_gateway_bridge () {
 
 		if (gw) {
 			gw.destroy();
+			set_gateway_bridge(info, (err) => {
+				if (err) throw err;
+				info.save();
+			});
 		}
-
-		set_gateway_bridge(info, (err) => {
-			if (err) throw err;
-			info.save();
-		});
 	}
 }
 
