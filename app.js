@@ -42,10 +42,12 @@ app.get('/scan', function (req, res) {
 });
 
 app.get('/show_unbridged_gateway_list', function (req, res) {
-	var output;
-	for(var mac in gateway_list )) {
-		if (!gateway_list[mac].bridged) {
-			output[mac] = gateway_list[mac];
+	var output = {};
+	for(var mac in gateway_list) {
+		let info = gateway_list[mac]._info;
+		if (!info.bridged) {
+			debug(info)
+			output[mac] = info;
 		}
 	}
 	res.status(200).send(output);
@@ -114,7 +116,7 @@ app.get('/remove_gateway', function (req, res) {
 });
 
 app.get('/show_bridged_gateway', function (req, res) {
-	var output;
+	var output = {};
 	for (var mac in gateway_list) {
 		let gw = gateway_list[mac]._gateway;
 		if (gw) {
@@ -142,13 +144,13 @@ scan_ava_zave_gateway();
 
 server.on('message', function (msg, rinfo) {
 	msg = msg.toString('utf8').split(/&/);
-	let title = msg[0];
-	let mac = msg[1];
-	let model = msg[2];
-	let ip = rinfo.address;
+	var title = msg[0];
+	var mac = msg[1];
+	var model = msg[2];
+	var ip = rinfo.address;
 
 	if (title.match(/^RE_WHOIS_AVA_ZWAVE#/)) {
-		let mac = mac.replace(/mac=/g, '').trim()
+		mac = mac.replace(/mac=/g, '').trim()
 
 		var info = GatewayInfo.load(mac);
 		gateway_list[mac] = { _info: info };
@@ -156,7 +158,8 @@ server.on('message', function (msg, rinfo) {
 		if (!info) {
 			info = GatewayInfo.create(mac);
 			info.ip = ip;
-			info.model = model;
+			info.model = model.replace(/model=/g, '').trim();;
+			info.mac = mac;
 			debug('Add gateway ' + mac + ' info.')
 			info.save();
 		} else if (info.ip != ip) {
