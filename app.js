@@ -187,9 +187,19 @@ server.on('message', function (msg, rinfo) {
 			info.mac = mac;
 			debug('Add gateway ' + mac + ' ip: ' + ip + ', model: ' + model);
 			info.save();
-		} else if (info.ip != ip) {
+		} else {
 			debug('Reload the gateway '+ mac +' IP address: ' + ip + 'bridged: ' + info.bridged);
-			info.ip = ip;
+			info.ip = ip; // Gateway ip probably change.
+
+			if (info.bridged) {
+				set_gateway_bridge(info, (err) => {
+					if (err)
+						debug(err);
+					else
+						debug('Re-bridge the gateway '+ mac +' IP address: ' + ip);
+				});
+			}
+
 			info.save();
 		}
 
