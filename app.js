@@ -1,4 +1,4 @@
-findAllGateway'use strict';
+'use strict';
 const hap_nodejs = require('hap-nodejs');
 const Gateway = require('./lib/Gateway.js');
 const dgram = require('dgram');
