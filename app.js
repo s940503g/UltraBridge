@@ -15,7 +15,7 @@ var app = express();
 
 var port = 5050;
 let pincode = "222-21-266";
-
+ipFinder.emit();
 app.get('/scan', function (req, res) {
 	ipFinder.emit();
 	res.status(200).send('Success.\n');
