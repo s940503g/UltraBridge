@@ -32,8 +32,12 @@ app.get('/register', function (req, res) {
 		}else{
 			let info = GatewayInfo.load(mac);
 			if (info) {
-				let gateway = new Gateway(mac);
-				gateway.BridgeGateway(acc, pwd);
+				let gw = ipFinder.publishedGateway[mac]._gateway;
+				gw.BridgeGateway(acc, pwd);
+				
+				res.status(200).send('Success.\n');
+				
+				gw.publish(this.port++, this.pincode);
 			} else {
 				throw "Gateway not found.";
 			}
@@ -44,9 +48,8 @@ app.get('/register', function (req, res) {
 			res.status(error.status).send(error);
 		else
 			res.status(400).send(error);
-	} finally {
-		res.status(200).send('Success.\n');
-	}
+	} 
+	
 });
 
 app.get('/show_bridged_gateway', function (req, res) {
