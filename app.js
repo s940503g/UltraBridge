@@ -50,11 +50,10 @@ app.get('/register', function (req, res) {
 
 app.get('/show_bridged_gateway', function (req, res) {
 	var output = {};
-	for (var mac in ipFinder.gateway_list) {
-		let gw = ipFinder.gateway_list[mac]._gateway;
-		if (gw) {
-			output[mac] = {acc: gw.setting.acc, ip: gw.setting.ip, mac: mac};
-		}
+	for (var mac in ipFinder.publishedGateway) {
+		let gw = ipFinder.publishedGateway[mac];
+		output[mac] = gw;
+
 	}
 	res.status(200).send(output);
 });
