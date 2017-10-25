@@ -34,7 +34,6 @@ app.get('/register', function (req, res) {
 			if (info) {
 				let gateway = new Gateway(mac);
 				gateway.BridgeGateway(acc, pwd);
-				gateway.publish(port, pincode);
 			} else {
 				throw "Gateway not found.";
 			}
@@ -45,6 +44,8 @@ app.get('/register', function (req, res) {
 			res.status(error.status).send(error);
 		else
 			res.status(400).send(error);
+	} finally {
+		res.status(200).send('Success.\n');
 	}
 });
 
