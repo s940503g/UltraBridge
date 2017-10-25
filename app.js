@@ -6,7 +6,7 @@ const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js')
-const ipFinder = require("./GatewayFinder.js");
+const ipFinder = require("./lib/GatewayFinder.js");
 
 ipFinder.on(); // Waiting for gateway callback.
 hap_nodejs.init();
@@ -42,7 +42,7 @@ app.get('/register', function (req, res) {
 	} catch (error) {
 		debug(error);
 		if (error.status)
-			res.status(error.status).send(error);;
+			res.status(error.status).send(error);
 		else
 			res.status(400).send(error);
 	}
