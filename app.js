@@ -13,8 +13,6 @@ hap_nodejs.init();
 
 var app = express();
 
-var port = 5050;
-let pincode = "222-21-266";
 ipFinder.emit();
 app.get('/scan', function (req, res) {
 	ipFinder.emit();
@@ -55,8 +53,8 @@ app.get('/register', function (req, res) {
 app.get('/show_bridged_gateway', function (req, res) {
 	var output = {};
 	for (var mac in ipFinder.publishedGateway) {
-		let info = GatewayInfo.load(mac);
-		output[mac].ip = info.ip;
+		let ip = ipFinder.publishedGateway[mac].ip;
+		output[mac].ip = ip;
 	}
 	res.status(200).send(output);
 });
