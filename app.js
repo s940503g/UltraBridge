@@ -34,9 +34,9 @@ app.get('/register', function (req, res) {
 			if (info) {
 				let gw = ipFinder.publishedGateway[mac]._gateway;
 				gw.BridgeGateway(acc, pwd);
-				
+
 				res.status(200).send('Success.\n');
-				
+
 				gw.publish(this.port++, this.pincode);
 			} else {
 				throw "Gateway not found.";
@@ -48,16 +48,15 @@ app.get('/register', function (req, res) {
 			res.status(error.status).send(error);
 		else
 			res.status(400).send(error);
-	} 
-	
+	}
+
 });
 
 app.get('/show_bridged_gateway', function (req, res) {
 	var output = {};
 	for (var mac in ipFinder.publishedGateway) {
-		let gw = ipFinder.publishedGateway[mac];
-		output[mac] = gw;
-
+		let info = GatewayInfo.load(mac);
+		output[mac].ip = info.ip;
 	}
 	res.status(200).send(output);
 });
