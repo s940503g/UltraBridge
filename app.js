@@ -5,7 +5,8 @@ const dgram = require('dgram');
 const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
-const GatewayInfo = require('./lib/GatewayInfo.js')
+const GatewayInfo = require('./lib/GatewayInfo.js');
+const AccessoryInfo = require('./lib/AccessoryInfo.js');
 const ipFinder = require("./lib/GatewayFinder.js");
 
 ipFinder.on(); // Waiting for gateway callback.
@@ -63,7 +64,7 @@ app.get('/unpaired', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
 
-	ipFinder.publishedGateway[mac]._gateway.BridgeAccessory._accessoryInfo.removePairedClient(mac);
+	AccessoryInfo.removePairedClient(mac);
 
 	gw_info.acc = "";
 	gw_info.pwd = "";
