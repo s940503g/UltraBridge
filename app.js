@@ -5,7 +5,8 @@ const dgram = require('dgram');
 const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
-const GatewayInfo = require('./lib/GatewayInfo.js')
+const GatewayInfo = require('./lib/GatewayInfo.js');
+const AccessoryInfo = require('./lib/AccessoryInfo.js');
 const ipFinder = require("./lib/GatewayFinder.js");
 
 ipFinder.on(); // Waiting for gateway callback.
@@ -26,7 +27,7 @@ app.get('/register', function (req, res) {
 
 	try {
 		if (!acc || !pwd || !mac){
-			throw {status: 422, msg: 'Error: Required parameter missed.\n'};
+			throw {status: 422, msg: 'ERROR: Required parameter missed.\n'};
 		}else{
 			let info = GatewayInfo.load(mac);
 			if (info) {
@@ -37,7 +38,7 @@ app.get('/register', function (req, res) {
 
 				gw.publish(this.port++, this.pincode);
 			} else {
-				throw "Gateway not found.";
+				throw "ERROR: Gateway not found.\n";
 			}
 		}
 	} catch (error) {
@@ -63,13 +64,14 @@ app.get('/unpaired', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
 
-	ipFinder.publishedGateway[mac]._gateway.BridgeAccessory._accessoryInfo.removePairedClient(mac);
-
 	gw_info.acc = "";
 	gw_info.pwd = "";
 	gw_info.save();
 
+	AccessoryInfo.removePairedClient(mac);
+
 	ipFinder.emit();
+
 	res.status(200).send('Success.\n');
 });
 
