@@ -63,12 +63,10 @@ app.get('/show', function (req, res) {
 app.get('/unpaired', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
+	let acc_info = AccessoryInfo.load(mac);
 
-	gw_info.acc = "";
-	gw_info.pwd = "";
-	gw_info.save();
-
-	AccessoryInfo.removePairedClient(mac);
+	gw_info.remove();
+	acc_info.remove();
 
 	ipFinder.emit();
 
