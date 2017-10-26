@@ -60,7 +60,7 @@ app.get('/show', function (req, res) {
 	res.status(200).send(output);
 });
 
-app.get('/unpaired', function (req, res) {
+app.get('/reset', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
 	let acc_info = AccessoryInfo.load(mac);
