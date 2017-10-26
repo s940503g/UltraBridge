@@ -50,13 +50,27 @@ app.get('/register', function (req, res) {
 
 });
 
-app.get('/show_bridged_gateway', function (req, res) {
+app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in ipFinder.publishedGateway) {
 		let ip = ipFinder.publishedGateway[mac].ip;
 		output[mac] = {ip: ip};
 	}
 	res.status(200).send(output);
+});
+
+app.get('/unpaired', function (req, res) {
+	let mac = req.query.mac;
+	let gw_info = GatewayInfo.load(mac);
+
+	ipFinder.publishedGateway[mac]._gateway.BridgeAccessory._accessoryInfo.removePairedClient(mac);
+
+	gw_info.acc = "";
+	gw_info.pwd = "";
+	gw_info.save();
+
+	ipFinder.emit();
+	res.status(200).send('Success.\n');
 });
 
 app.listen(3000);
