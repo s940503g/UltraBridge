@@ -54,7 +54,7 @@ app.get('/show_bridged_gateway', function (req, res) {
 	var output = {};
 	for (var mac in ipFinder.publishedGateway) {
 		let ip = ipFinder.publishedGateway[mac].ip;
-		output[mac].ip = ip;
+		output[mac] = {ip: ip};
 	}
 	res.status(200).send(output);
 });
