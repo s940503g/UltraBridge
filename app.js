@@ -27,7 +27,7 @@ app.get('/register', function (req, res) {
 
 	try {
 		if (!acc || !pwd || !mac){
-			throw {status: 422, msg: 'Error: Required parameter missed.\n'};
+			throw {status: 422, msg: 'ERROR: Required parameter missed.\n'};
 		}else{
 			let info = GatewayInfo.load(mac);
 			if (info) {
@@ -38,7 +38,7 @@ app.get('/register', function (req, res) {
 
 				gw.publish(this.port++, this.pincode);
 			} else {
-				throw "Gateway not found.";
+				throw "ERROR: Gateway not found.\n";
 			}
 		}
 	} catch (error) {
@@ -64,13 +64,14 @@ app.get('/unpaired', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
 
-	AccessoryInfo.removePairedClient(mac);
-
 	gw_info.acc = "";
 	gw_info.pwd = "";
 	gw_info.save();
 
+	AccessoryInfo.removePairedClient(mac);
+
 	ipFinder.emit();
+
 	res.status(200).send('Success.\n');
 });
 
