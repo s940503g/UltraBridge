@@ -51,16 +51,21 @@ app.get('/show', function (req, res) {
 });
 
 app.get('/reset', function (req, res) {
-	let mac = req.query.mac;
-	let gw_info = GatewayInfo.load(mac);
+	try {
+		let mac = req.query.mac;
+		let gw_info = GatewayInfo.load(mac);
 
-	if (gw_info.acc !== "" && gw_info.pwd !== "") {
-		ipFinder.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
+		if (gw_info.acc !== "" && gw_info.pwd !== "") {
+			ipFinder.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
+		}
+		ipFinder.publishedGateway[mac]._gateway.publish(ipFinder.port++, ipFinder.pincode);
+
+		ipFinder.emit();
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
 	}
-	ipFinder.publishedGateway[mac]._gateway.publish(ipFinder.port++, ipFinder.pincode);
-
-	ipFinder.emit();
-	res.status(200).send('Success.\n');
 });
 
 app.listen(3000);
