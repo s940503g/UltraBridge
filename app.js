@@ -28,7 +28,10 @@ app.get('/register', function (req, res) {
 			throw 'ERROR: Required parameter missed.\n'
 		}else{
 			if (!GatewayManager.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
+
 			let gw = GatewayManager.publishedGateway[mac]._gateway;
+			gw.destroy();
+			
 			gw.BridgeGateway(acc, pwd);
 			gw.publish(GatewayManager.port++, GatewayManager.pincode);
 			res.status(200).send('Success.\n');
