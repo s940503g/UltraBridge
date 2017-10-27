@@ -21,7 +21,7 @@ app.get('/scan', function (req, res) {
 });
 
 app.get('/register', function (req, res) {
-	let {acc, pwd, ip} = req.query;
+	let {acc, pwd, mac} = req.query;
 
 	try {
 		if (!acc || !pwd || !mac){
@@ -64,7 +64,6 @@ app.get('/reset', function (req, res) {
 		try {
 			if (acc && pwd){
 				debug("acc and pwd exists.");
-				console.log(acc + ":" + pwd);
 				GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
 			}
 		} catch (e) {
