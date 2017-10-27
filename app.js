@@ -8,21 +8,20 @@ const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
 const GatewayManager = require("./lib/GatewayManager.js");
 
-GatewayManager.on(); // Waiting for gateway callback.
 hap_nodejs.init();
 
 var app = express();
 
+GatewayManager.on();
 GatewayManager.emit();
+
 app.get('/scan', function (req, res) {
 	GatewayManager.emit();
 	res.status(200).send('Success.\n');
 });
 
 app.get('/register', function (req, res) {
-	let acc = req.query.acc;
-	let pwd = req.query.pwd;
-	let mac = req.query.mac;
+	let {acc, pwd, ip} = req.query;
 
 	try {
 		if (!acc || !pwd || !mac){
@@ -52,16 +51,25 @@ app.get('/show', function (req, res) {
 
 app.get('/reset', function (req, res) {
 	try {
-		let mac = req.query.mac;
-		let gw_info = GatewayInfo.load(mac);
+		let {mac, acc, pwd} = req.query;
 
-		if (gw_info.acc !== "" && gw_info.pwd !== "") {
-			GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
+		GatewayManager.publishedGateway[mac]._gateway.reset();
+		GatewayManager.publishedGateway[mac]._gateway.destroy();
+
+		let info = GatewayInfo.load(mac);
+		info.acc = acc || "";
+		info.pwd = pwd || "";
+		info.save(); // reset acc and pwd in storage.
+
+		try {
+			if (acc && pwd) GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
+		} catch (e) {
+			debug(e);
+		} finally {
+			GatewayManager.publishedGateway[mac]._gateway.publish(GatewayManager.port++, GatewayManager.pincode);
+			res.status(200).send('Success.\n');
 		}
-		GatewayManager.publishedGateway[mac]._gateway.publish(GatewayManager.port++, GatewayManager.pincode);
 
-		GatewayManager.emit();
-		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
 		res.status(400).send(e);
