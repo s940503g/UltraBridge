@@ -6,16 +6,16 @@ const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
-const ipFinder = require("./lib/GatewayFinder.js");
+const GatewayManager = require("./lib/GatewayManager.js");
 
-ipFinder.on(); // Waiting for gateway callback.
+GatewayManager.on(); // Waiting for gateway callback.
 hap_nodejs.init();
 
 var app = express();
 
-ipFinder.emit();
+GatewayManager.emit();
 app.get('/scan', function (req, res) {
-	ipFinder.emit();
+	GatewayManager.emit();
 	res.status(200).send('Success.\n');
 });
 
@@ -28,10 +28,10 @@ app.get('/register', function (req, res) {
 		if (!acc || !pwd || !mac){
 			throw 'ERROR: Required parameter missed.\n'
 		}else{
-			if (!ipFinder.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
-			let gw = ipFinder.publishedGateway[mac]._gateway;
+			if (!GatewayManager.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
+			let gw = GatewayManager.publishedGateway[mac]._gateway;
 			gw.BridgeGateway(acc, pwd);
-			gw.publish(ipFinder.port++, ipFinder.pincode);
+			gw.publish(GatewayManager.port++, GatewayManager.pincode);
 			res.status(200).send('Success.\n');
 		}
 	} catch (error) {
@@ -43,8 +43,8 @@ app.get('/register', function (req, res) {
 
 app.get('/show', function (req, res) {
 	var output = {};
-	for (var mac in ipFinder.publishedGateway) {
-		let ip = ipFinder.publishedGateway[mac].ip;
+	for (var mac in GatewayManager.publishedGateway) {
+		let ip = GatewayManager.publishedGateway[mac].ip;
 		output[mac] = {ip: ip};
 	}
 	res.status(200).send(output);
@@ -56,11 +56,11 @@ app.get('/reset', function (req, res) {
 		let gw_info = GatewayInfo.load(mac);
 
 		if (gw_info.acc !== "" && gw_info.pwd !== "") {
-			ipFinder.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
+			GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
 		}
-		ipFinder.publishedGateway[mac]._gateway.publish(ipFinder.port++, ipFinder.pincode);
+		GatewayManager.publishedGateway[mac]._gateway.publish(GatewayManager.port++, GatewayManager.pincode);
 
-		ipFinder.emit();
+		GatewayManager.emit();
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
