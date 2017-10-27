@@ -53,7 +53,7 @@ app.get('/reset', function (req, res) {
 	try {
 		let {mac, acc, pwd} = req.query;
 
-		GatewayManager.publishedGateway[mac]._gateway.reset();
+		// GatewayManager.publishedGateway[mac]._gateway.reset();
 		GatewayManager.publishedGateway[mac]._gateway.destroy();
 
 		let info = GatewayInfo.load(mac);
@@ -62,7 +62,10 @@ app.get('/reset', function (req, res) {
 		info.save(); // reset acc and pwd in storage.
 
 		try {
-			if (acc && pwd) GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
+			if (acc && pwd)
+				debug("acc and pwd exists.");
+				console.log(acc + ":" + pwd);
+				GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
 		} catch (e) {
 			debug(e);
 		} finally {
