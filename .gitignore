@@ -4,3 +4,5 @@ node_modules
 # ignore persist
 persist
 lib/persist
+
+log
