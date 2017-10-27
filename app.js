@@ -26,7 +26,7 @@ app.get('/register', function (req, res) {
 
 	try {
 		if (!acc || !pwd || !mac){
-			throw {status: 422, msg: 'ERROR: Required parameter missed.\n'};
+			throw 'ERROR: Required parameter missed.\n'
 		}else{
 			if (!ipFinder.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
 			let gw = ipFinder.publishedGateway[mac]._gateway;
