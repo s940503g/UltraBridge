@@ -35,7 +35,7 @@ app.get('/register', function (req, res) {
 
 				res.status(200).send('Success.\n');
 
-				gw.publish(this.port++, this.pincode);
+				gw.publish(ipFinder.port++, ipFinder.pincode);
 			} else {
 				throw "ERROR: Gateway not found.\n";
 			}
