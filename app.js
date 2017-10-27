@@ -63,13 +63,13 @@ app.get('/show', function (req, res) {
 app.get('/reset', function (req, res) {
 	let mac = req.query.mac;
 	let gw_info = GatewayInfo.load(mac);
-	let acc_info = AccessoryInfo.load(mac);
 
-	gw_info.remove();
-	acc_info.remove();
+	if (gw_info.acc !== "" && gw_info.pwd !== "") {
+		ipFinder.publishedGateway[mac]._gateway.BridgeGateway(gw_info.acc, gw_info.pwd);
+	}
+	ipFinder.publishedGateway[mac]._gateway.publish(ipFinder.port++, ipFinder.pincode);
 
 	ipFinder.emit();
-
 	res.status(200).send('Success.\n');
 });
 
