@@ -6,7 +6,6 @@ const debug = require('debug')('main');
 const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
-const AccessoryInfo = require('./lib/AccessoryInfo.js');
 const ipFinder = require("./lib/GatewayFinder.js");
 
 ipFinder.on(); // Waiting for gateway callback.
