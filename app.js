@@ -62,10 +62,11 @@ app.get('/reset', function (req, res) {
 		info.save(); // reset acc and pwd in storage.
 
 		try {
-			if (acc && pwd)
+			if (acc && pwd){
 				debug("acc and pwd exists.");
 				console.log(acc + ":" + pwd);
 				GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
+			}
 		} catch (e) {
 			debug(e);
 		} finally {
