@@ -28,24 +28,15 @@ app.get('/register', function (req, res) {
 		if (!acc || !pwd || !mac){
 			throw {status: 422, msg: 'ERROR: Required parameter missed.\n'};
 		}else{
-			let info = GatewayInfo.load(mac);
-			if (info) {
-				let gw = ipFinder.publishedGateway[mac]._gateway;
-				gw.BridgeGateway(acc, pwd);
-
-				res.status(200).send('Success.\n');
-
-				gw.publish(ipFinder.port++, ipFinder.pincode);
-			} else {
-				throw "ERROR: Gateway not found.\n";
-			}
+			if (!ipFinder.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
+			let gw = ipFinder.publishedGateway[mac]._gateway;
+			gw.BridgeGateway(acc, pwd);
+			gw.publish(ipFinder.port++, ipFinder.pincode);
+			res.status(200).send('Success.\n');
 		}
 	} catch (error) {
 		debug(error);
-		if (error.status)
-			res.status(error.status).send(error);
-		else
-			res.status(400).send(error);
+		res.status(400).send(error);
 	}
 
 });
