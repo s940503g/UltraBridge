@@ -20,29 +20,6 @@ app.get('/scan', function (req, res) {
 	res.status(200).send('Success.\n');
 });
 
-// app.get('/register', function (req, res) {
-// 	let {acc, pwd, mac} = req.query;
-//
-// 	try {
-// 		if (!acc || !pwd || !mac){
-// 			throw 'ERROR: Required parameter missed.\n'
-// 		}else{
-// 			if (!GatewayManager.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
-//
-// 			let gw = GatewayManager.publishedGateway[mac]._gateway;
-// 			gw.destroy();
-//
-// 			gw.BridgeGateway(acc, pwd);
-// 			gw.publish(GatewayManager.port++, GatewayManager.pincode);
-// 			res.status(200).send('Success.\n');
-// 		}
-// 	} catch (error) {
-// 		debug(error);
-// 		res.status(400).send(error);
-// 	}
-//
-// });
-
 app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
@@ -56,7 +33,6 @@ app.get('/reset', function (req, res) {
 	try {
 		let {mac, acc, pwd} = req.query;
 
-		// GatewayManager.publishedGateway[mac]._gateway.reset();
 		GatewayManager.publishedGateway[mac]._gateway.destroy();
 
 		let info = GatewayInfo.load(mac);
