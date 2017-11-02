@@ -13,49 +13,49 @@ hap_nodejs.init();
 var app = express();
 
 GatewayManager.on();
-GatewayManager.emit();
+GatewayManager.scan();
 
 app.get('/scan', function (req, res) {
-	GatewayManager.emit();
+	GatewayManager.scan();
 	res.status(200).send('Success.\n');
 });
 
 app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].ip;
+		let ip = GatewayManager.publishedGateway[mac].setting.ip;
 		output[mac] = {ip: ip};
 	}
 	res.status(200).send(output);
 });
 
-app.get('/reset', function (req, res) {
+app.get('/register', function (req, res) {
 	try {
 		let {mac, acc, pwd} = req.query;
-
-		GatewayManager.publishedGateway[mac]._gateway.destroy();
-
 		let info = GatewayInfo.load(mac);
-		info.acc = acc || "";
-		info.pwd = pwd || "";
-		info.save(); // reset acc and pwd in storage.
+		let gateway = GatewayManager.publishedGateway[mac];
 
-		try {
-			if (acc && pwd){
-				debug("acc and pwd exists.");
-				GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
-			}
-		} catch (e) {
-			debug(e);
-		} finally {
-			GatewayManager.publishedGateway[mac]._gateway.publish(GatewayManager.port++, GatewayManager.pincode);
-			res.status(200).send('Success.\n');
-		}
+		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
+		if (acc && pwd) gateway.BridgeGateway(acc, pwd);
+		gateway.destroy();
+		gateway.publish(GatewayManager.port++, GatewayManager.pincode);
 
+		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
 		res.status(400).send(e);
 	}
 });
+
+app.get('/clear', function (req, res) {
+	try {
+		GatewayManager.clear();
+		GatewayManager.scan();
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+})
 
 app.listen(3000);
