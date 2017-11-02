@@ -36,7 +36,10 @@ app.get('/register', function (req, res) {
 		let gateway = GatewayManager.publishedGateway[mac];
 
 		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
-		if (acc && pwd) gateway.BridgeGateway(acc, pwd);
+		if (acc && pwd) {
+			gateway.destroy();
+			gateway.BridgeGateway(acc, pwd);
+		}
 		gateway.publish(GatewayManager.port++, GatewayManager.pincode);
 
 		res.status(200).send('Success.\n');
