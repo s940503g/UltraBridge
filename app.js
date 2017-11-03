@@ -39,11 +39,10 @@ app.get('/register', function (req, res) {
 		if (acc && pwd) {
 			gateway.destroy();
 			gateway.BridgeGateway(acc, pwd, (err) => {
-				if (err) throw err;
+				if (err) debug(err);
 			});
 		}
 		gateway.publish(GatewayManager.port++, GatewayManager.pincode);
-
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
