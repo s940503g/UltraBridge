@@ -2,7 +2,7 @@
 const hap_nodejs = require('hap-nodejs');
 const Gateway = require('./lib/Gateway.js');
 const dgram = require('dgram');
-const debug = require('debug')('main');
+const debug = require('debug')('app');
 const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
@@ -31,6 +31,7 @@ app.get('/show', function (req, res) {
 
 app.get('/register', function (req, res) {
 	try {
+		GatewayManager.scan();
 		let {mac, acc, pwd} = req.query;
 		let info = GatewayInfo.load(mac);
 		let gateway = GatewayManager.publishedGateway[mac];
