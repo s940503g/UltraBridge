@@ -37,12 +37,12 @@ app.get('/register', function (req, res) {
 
 		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
 		if (acc && pwd) {
-			gateway.destroy();
+			// gateway.destroy();
 			gateway.BridgeGateway(acc, pwd, (err) => {
 				if (err) debug(err);
 			});
 		}
-		gateway.publish(GatewayManager.port++, GatewayManager.pincode);
+		// gateway.publish(GatewayManager.port++, GatewayManager.pincode);
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
