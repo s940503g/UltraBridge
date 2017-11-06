@@ -49,6 +49,18 @@ app.get('/register', function (req, res) {
 	}
 });
 
+app.get('/removeDevices', function (req, res) {
+	try {
+		let {mac} = req.query;
+		let gateway = GatewayManager.publishedGateway[mac];
+		gateway.Bridge.removeAllBridgedAccessories();
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
 app.get('/rebridge', function (req, res) {
 	try {
 		let {mac} = req.query;
