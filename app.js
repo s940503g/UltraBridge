@@ -49,11 +49,12 @@ app.get('/register', function (req, res) {
 	}
 });
 
-app.get('/rebridgeAccessory', function (req, res) {
+app.get('/rebridge', function (req, res) {
 	try {
 		let {mac} = req.query;
 		let gateway = GatewayManager.publishedGateway[mac];
 		gateway.rebridgeGateway();
+		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
 		res.status(400).send(e);
