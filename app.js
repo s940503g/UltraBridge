@@ -29,6 +29,20 @@ app.get('/show', function (req, res) {
 	res.status(200).send(output);
 });
 
+app.get('/show_unregistered', function (req, res) {
+	var output = {};
+	for (var mac in GatewayManager.publishedGateway) {
+		let ip = GatewayManager.publishedGateway[mac].setting.ip;
+		let acc = GatewayManager.publishedGateway[mac].setting.acc;
+		let pwd = GatewayManager.publishedGateway[mac].setting.pwd;
+		
+		if (acc && pwd) {
+			output[mac] = {ip: ip, acc:acc};
+		}
+	}
+	res.status(200).send(output);
+});
+
 app.get('/register', function (req, res) {
 	try {
 		GatewayManager.scan();
@@ -38,6 +52,7 @@ app.get('/register', function (req, res) {
 
 		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
 		if (acc && pwd) {
+			debug('')
 			gateway.BridgeGateway(acc, pwd, (err) => {
 				if (err) debug(err);
 			});
