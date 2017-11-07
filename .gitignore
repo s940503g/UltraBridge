@@ -6,3 +6,5 @@ persist
 lib/persist
 
 ./*log
+
+package-lock.json
