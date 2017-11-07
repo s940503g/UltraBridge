@@ -2,7 +2,7 @@
 const hap_nodejs = require('hap-nodejs');
 const Gateway = require('./lib/Gateway.js');
 const dgram = require('dgram');
-const debug = require('debug')('main');
+const debug = require('debug')('app');
 const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
@@ -13,69 +13,86 @@ hap_nodejs.init();
 var app = express();
 
 GatewayManager.on();
-GatewayManager.emit();
+GatewayManager.scan();
 
 app.get('/scan', function (req, res) {
-	GatewayManager.emit();
+	GatewayManager.scan();
 	res.status(200).send('Success.\n');
 });
-
-// app.get('/register', function (req, res) {
-// 	let {acc, pwd, mac} = req.query;
-//
-// 	try {
-// 		if (!acc || !pwd || !mac){
-// 			throw 'ERROR: Required parameter missed.\n'
-// 		}else{
-// 			if (!GatewayManager.publishedGateway[mac]) throw "ERROR: Gateway not found.\n";
-//
-// 			let gw = GatewayManager.publishedGateway[mac]._gateway;
-// 			gw.destroy();
-//
-// 			gw.BridgeGateway(acc, pwd);
-// 			gw.publish(GatewayManager.port++, GatewayManager.pincode);
-// 			res.status(200).send('Success.\n');
-// 		}
-// 	} catch (error) {
-// 		debug(error);
-// 		res.status(400).send(error);
-// 	}
-//
-// });
 
 app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].ip;
+		let ip = GatewayManager.publishedGateway[mac].setting.ip;
 		output[mac] = {ip: ip};
 	}
 	res.status(200).send(output);
 });
 
-app.get('/reset', function (req, res) {
-	try {
-		let {mac, acc, pwd} = req.query;
-
-		// GatewayManager.publishedGateway[mac]._gateway.reset();
-		GatewayManager.publishedGateway[mac]._gateway.destroy();
-
-		let info = GatewayInfo.load(mac);
-		info.acc = acc || "";
-		info.pwd = pwd || "";
-		info.save(); // reset acc and pwd in storage.
-
-		try {
-			if (acc && pwd){
-				debug("acc and pwd exists.");
-				GatewayManager.publishedGateway[mac]._gateway.BridgeGateway(acc, pwd);
-			}
-		} catch (e) {
-			debug(e);
-		} finally {
-			GatewayManager.publishedGateway[mac]._gateway.publish(GatewayManager.port++, GatewayManager.pincode);
-			res.status(200).send('Success.\n');
+app.get('/show_unregistered', function (req, res) {
+	var output = {};
+	for (var mac in GatewayManager.publishedGateway) {
+		let ip = GatewayManager.publishedGateway[mac].setting.ip;
+		let acc = GatewayManager.publishedGateway[mac].setting.acc;
+		let pwd = GatewayManager.publishedGateway[mac].setting.pwd;
+		
+		if (acc && pwd) {
+			output[mac] = {ip: ip, acc:acc};
 		}
+	}
+	res.status(200).send(output);
+});
 
+app.get('/register', function (req, res) {
+	try {
+		GatewayManager.scan();
+		let {mac, acc, pwd} = req.query;
+		let info = GatewayInfo.load(mac);
+		let gateway = GatewayManager.publishedGateway[mac];
+
+		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
+		if (acc && pwd) {
+			debug('')
+			gateway.BridgeGateway(acc, pwd, (err) => {
+				if (err) debug(err);
+			});
+		}
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
+app.get('/removeDevices', function (req, res) {
+	try {
+		let {mac} = req.query;
+		let gateway = GatewayManager.publishedGateway[mac];
+		gateway.Bridge.removeAllBridgedAccessories();
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
+app.get('/rebridge', function (req, res) {
+	try {
+		let {mac} = req.query;
+		let gateway = GatewayManager.publishedGateway[mac];
+		gateway.rebridgeGateway();
+		res.status(200).send('Success.\n');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
+app.get('/clear', function (req, res) {
+	try {
+		GatewayManager.clear();
+		GatewayManager.scan();
+		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
 		res.status(400).send(e);
