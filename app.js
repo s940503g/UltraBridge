@@ -35,8 +35,8 @@ app.get('/show_unregistered', function (req, res) {
 		let ip = GatewayManager.publishedGateway[mac].setting.ip;
 		let acc = GatewayManager.publishedGateway[mac].setting.acc;
 		let pwd = GatewayManager.publishedGateway[mac].setting.pwd;
-		
-		if (acc && pwd) {
+
+		if (!acc || !pwd) {
 			output[mac] = {ip: ip, acc:acc};
 		}
 	}
