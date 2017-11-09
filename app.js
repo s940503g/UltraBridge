@@ -29,7 +29,7 @@ app.get('/show', function (req, res) {
 	res.status(200).send(output);
 });
 
-app.get('/show_unregistered', function (req, res) {
+app.get('/unregistered', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
 		let ip = GatewayManager.publishedGateway[mac].setting.ip;
@@ -64,11 +64,10 @@ app.get('/register', function (req, res) {
 	}
 });
 
-app.get('/removeDevices', function (req, res) {
+app.get('/remove', function (req, res) {
 	try {
 		let {mac} = req.query;
-		let gateway = GatewayManager.publishedGateway[mac];
-		gateway.Bridge.removeAllBridgedAccessories();
+		GatewayManager.remove(mac);
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
