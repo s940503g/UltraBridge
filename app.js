@@ -23,57 +23,18 @@ app.get('/scan', function (req, res) {
 app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].setting.ip;
-		output[mac] = {ip: ip};
-	}
-	res.status(200).send(output);
-});
-
-app.get('/paired', function (req, res) {
-	var output = {};
-	for (var mac in GatewayManager.publishedGateway) {
 		let gateway = GatewayManager.publishedGateway[mac];
 		let clients = gateway.Bridge._accessoryInfo.pairedClients;
 		let acc = gateway.setting.acc;
-		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
+		let ip = gateway.setting.ip;
+		let isRegistered = acc && pwd;
 
-		console.log(clients);
-		console.log(clients.length);
+		output[mac] = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered};
 
 		for (var client in clients) {
-			output[mac] = {ip: ip, acc: acc, reachable: reachable};
-		}
-
-	}
-	res.status(200).send(output);
-});
-
-app.get('/unpaired', function (req, res) {
-	var output = {};
-	for (var mac in GatewayManager.publishedGateway) {
-		let gateway = GatewayManager.publishedGateway[mac];
-		let clients = gateway.Bridge._accessoryInfo.pairedClients;
-		let acc = gateway.setting.acc;
-		let ip = gateway.setting.ip;
-		let reachable = gateway.reachable;
-
-		if (!clients === {}) {
-			output[mac] = {ip: ip, acc: acc, reachable: reachable};
-		}
-	}
-	res.status(200).send(output);
-});
-
-app.get('/unregistered', function (req, res) {
-	var output = {};
-	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].setting.ip;
-		let acc = GatewayManager.publishedGateway[mac].setting.acc;
-		let pwd = GatewayManager.publishedGateway[mac].setting.pwd;
-
-		if (!acc || !pwd) {
-			output[mac] = {ip: ip, acc:acc};
+			output[mac].paired = true;
+			break;
 		}
 	}
 	res.status(200).send(output);
