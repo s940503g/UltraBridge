@@ -7,6 +7,7 @@ const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
 const GatewayManager = require("./lib/GatewayManager.js");
+const bodyParser = require('body-parser');
 
 hap_nodejs.init();
 
@@ -15,7 +16,11 @@ var app = express();
 GatewayManager.on();
 GatewayManager.scan();
 
-app.get('/scan', function (req, res) {
+app.set('view engine', 'ejs')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/api/scan', function (req, res) {
 	GatewayManager.scan();
 	res.status(200).send('Success.\n');
 });
@@ -41,7 +46,7 @@ app.get('/show', function (req, res) {
 	res.status(200).send(output);
 });
 
-app.get('/register', function (req, res) {
+app.get('/api/register', function (req, res) {
 	try {
 		GatewayManager.scan();
 		let {mac, acc, pwd} = req.query;
@@ -52,17 +57,21 @@ app.get('/register', function (req, res) {
 		if (acc && pwd) {
 			debug('')
 			gateway.BridgeGateway(acc, pwd, (err) => {
-				if (err) debug(err);
+				if (err) throw 'Error: Wrong account or password.';
 			});
 		}
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
-		res.status(400).send(e);
+		if (e == 'Wrong account or password.') {
+			res.status(401).send(e);
+		} else {
+			res.status(400).send(e);
+		}
 	}
 });
 
-app.get('/remove', function (req, res) {
+app.get('/api/remove', function (req, res) {
 	try {
 		let {mac} = req.query;
 		GatewayManager.remove(mac);
@@ -73,7 +82,7 @@ app.get('/remove', function (req, res) {
 	}
 });
 
-app.get('/rebridge', function (req, res) {
+app.get('/api/rebridge', function (req, res) {
 	try {
 		let {mac} = req.query;
 		let gateway = GatewayManager.publishedGateway[mac];
@@ -85,7 +94,7 @@ app.get('/rebridge', function (req, res) {
 	}
 });
 
-app.get('/clear', function (req, res) {
+app.get('/api/clear', function (req, res) {
 	try {
 		GatewayManager.clear();
 		GatewayManager.scan();
@@ -95,5 +104,75 @@ app.get('/clear', function (req, res) {
 		res.status(400).send(e);
 	}
 });
+
+/*
+web interface
+ */
+
+app.post('/gateway/:mac/register', (req, res) => {
+	try {
+		GatewayManager.scan();
+		let {mac} = req.params;
+		let {acc, pwd} = req.body;
+		let info = GatewayInfo.load(mac);
+		let gateway = GatewayManager.publishedGateway[mac];
+
+		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
+		if (acc && pwd) {
+			debug('')
+			gateway.BridgeGateway(acc, pwd, (err) => {
+				if (err) throw 'Error: Wrong account or password.';
+			});
+		}
+		res.redirect('/');
+	} catch (e) {
+		debug(e);
+		if (e == 'Wrong account or password.') {
+			res.status(401).send(e);
+		} else {
+			res.status(400).send(e);
+		}
+	};
+})
+
+app.get('/', (req, res) => {
+	let gateway_list = [];
+	for (mac in GatewayManager.publishedGateway) {
+		let clients = gateway.Bridge._accessoryInfo.pairedClients;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+		let ip = gateway.setting.ip;
+		let pwd = gateway.setting.pwd;
+		let isRegistered = acc && pwd ? true:false;
+
+		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
+		gateway_list.push(content);
+	}
+	res.render('home', { gateway_list: gateway_list });
+})
+
+app.get('/gateway/:mac', (req, res) => {
+	for (mac in GatewayManager.publishedGateway) {
+		if (mac == req.params.mac) {
+			let clients = gateway.Bridge._accessoryInfo.pairedClients;
+			let acc = gateway.setting.acc;
+	 		let reachable = gateway.reachable;
+	 		let ip = gateway.setting.ip;
+	 		let pwd = gateway.setting.pwd;
+	 		let isRegistered = acc && pwd ? true:false;
+
+	 		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
+
+	 		for (var client in clients) {
+	 			content[mac].paired = true;
+	 			break;
+	 		}
+
+			res.render('gateway', content);
+		}
+	}
+})
+
+console.log('Listening on port 3000');
 
 app.listen(3000);

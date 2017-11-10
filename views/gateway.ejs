@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>UltraBridge</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <%- include('partials/navbar') %>
+        <div>
+            <h2><%= mac %></h2>
+            <form action="<%= mac %>/register" method="post">
+                <p>
+                    Account: <input type="text" name="acc" placeholder="account" value="<%= acc %>" />
+                </p>
+                <p>
+                    Password: <input type="password" name="pwd" placeholder="password" value="" />
+                </p>
+                <p>
+                    <input type="password" name="mac" hidden="true" value="" />
+                    <input type="submit" value="Submit" />
+                </p>
+            </form>
+
+            <hr>
+        </div>
+        <%- include('partials/footer') %>
+    </div>
+</body>
+
+</html>
