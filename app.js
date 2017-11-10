@@ -28,7 +28,8 @@ app.get('/show', function (req, res) {
 		let acc = gateway.setting.acc;
 		let reachable = gateway.reachable;
 		let ip = gateway.setting.ip;
-		let isRegistered = acc ? true:false;
+		let pwd = gateway.setting.pwd;
+		let isRegistered = acc && pwd ? true:false;
 
 		output[mac] = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered};
 
