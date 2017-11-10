@@ -38,9 +38,13 @@ app.get('/paired', function (req, res) {
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
 
-		if (clients === {}) {
+		console.log(clients);
+		console.log(clients.length);
+
+		for (var client in clients) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
+
 	}
 	res.status(200).send(output);
 });
