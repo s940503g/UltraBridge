@@ -33,12 +33,12 @@ app.get('/paired', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
 		let gateway = GatewayManager.publishedGateway[mac];
-		let accessoryInfo = gateway.Bridge._accessoryInfo;
+		let numOfClients = gateway.Bridge._accessoryInfo.pairedClients.length;
 		let acc = gateway.setting.acc;
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
 
-		if (accessoryInfo.pairedClients.length) {
+		if (numOfClients) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
 	}
@@ -49,12 +49,12 @@ app.get('/unpaired', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
 		let gateway = GatewayManager.publishedGateway[mac];
-		let accessoryInfo = gateway.Bridge._accessoryInfo;
+		let numOfClients = gateway.Bridge._accessoryInfo.pairedClients.length;
 		let acc = gateway.setting.acc;
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
-		console.log(accessoryInfo);
-		if (!accessoryInfo.pairedClients.length) {
+
+		if (!numOfClients) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
 	}
