@@ -134,7 +134,7 @@ app.post('/gateway/:mac/register', (req, res) => {
 	};
 })
 
-app.get('/web', (req, res) => {
+app.get('/', (req, res) => {
 	let gateway_list = [];
 	for (mac in GatewayManager.publishedGateway) {
 		let clients = gateway.Bridge._accessoryInfo.pairedClients;
