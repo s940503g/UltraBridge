@@ -25,9 +25,11 @@
   },
   "homepage": "https://github.com/s940503g/UtraBridge#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "child_process": "^1.0.2",
     "color-temperature": "^0.2.7",
     "decimal.js": "^7.3.0",
+    "ejs": "^2.5.7",
     "esutils": "^2.0.2",
     "express": "^4.16.2",
     "forever": "^0.15.3",
