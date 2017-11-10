@@ -137,6 +137,7 @@ app.post('/gateway/:mac/register', (req, res) => {
 app.get('/', (req, res) => {
 	let gateway_list = [];
 	for (var mac in GatewayManager.publishedGateway) {
+		let gateway = GatewayManager.publishedGateway[mac];
 		let clients = gateway.Bridge._accessoryInfo.pairedClients;
 		let acc = gateway.setting.acc;
 		let reachable = gateway.reachable;
@@ -153,6 +154,7 @@ app.get('/', (req, res) => {
 app.get('/gateway/:mac', (req, res) => {
 	for (var mac in GatewayManager.publishedGateway) {
 		if (mac == req.params.mac) {
+			let gateway = GatewayManager.publishedGateway[mac];
 			let clients = gateway.Bridge._accessoryInfo.pairedClients;
 			let acc = gateway.setting.acc;
 	 		let reachable = gateway.reachable;
