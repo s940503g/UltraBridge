@@ -119,7 +119,6 @@ app.post('/gateway/:mac/register', (req, res) => {
 
 		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
 		if (acc && pwd) {
-			debug('')
 			gateway.BridgeGateway(acc, pwd, (err) => {
 				if (err) throw 'Error: Wrong account or password.';
 			});
@@ -135,7 +134,7 @@ app.post('/gateway/:mac/register', (req, res) => {
 	};
 })
 
-app.get('/', (req, res) => {
+app.get('/web', (req, res) => {
 	let gateway_list = [];
 	for (mac in GatewayManager.publishedGateway) {
 		let clients = gateway.Bridge._accessoryInfo.pairedClients;
