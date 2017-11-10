@@ -29,6 +29,36 @@ app.get('/show', function (req, res) {
 	res.status(200).send(output);
 });
 
+app.get('/paired', function (req, res) {
+	var output = {};
+	for (var mac in GatewayManager.publishedGateway) {
+		let gateway = GatewayManager.publishedGateway[mac];
+		let accessoryInfo = gateway.Bridge._accessoryInfo;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+
+		if (accessoryInfo.pairedClients.length) {
+			output[mac] = {ip: ip, acc: acc, reachable: reachable};
+		}
+	}
+	res.status(200).send(output);
+});
+
+app.get('/unpaired', function (req, res) {
+	var output = {};
+	for (var mac in GatewayManager.publishedGateway) {
+		let gateway = GatewayManager.publishedGateway[mac];
+		let accessoryInfo = gateway.Bridge._accessoryInfo;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+
+		if (!accessoryInfo.pairedClients.length) {
+			output[mac] = {ip: ip, acc: acc, reachable: reachable};
+		}
+	}
+	res.status(200).send(output);
+});
+
 app.get('/unregistered', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
