@@ -35,6 +35,7 @@ app.get('/paired', function (req, res) {
 		let gateway = GatewayManager.publishedGateway[mac];
 		let accessoryInfo = gateway.Bridge._accessoryInfo;
 		let acc = gateway.setting.acc;
+		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
 
 		if (accessoryInfo.pairedClients.length) {
@@ -52,7 +53,7 @@ app.get('/unpaired', function (req, res) {
 		let acc = gateway.setting.acc;
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
-
+		console.log(accessoryInfo);
 		if (!accessoryInfo.pairedClients.length) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
