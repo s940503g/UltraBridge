@@ -37,7 +37,7 @@ app.get('/paired', function (req, res) {
 		let acc = gateway.setting.acc;
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
-
+		console.log(numOfClients);
 		if (numOfClients) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
@@ -53,7 +53,7 @@ app.get('/unpaired', function (req, res) {
 		let acc = gateway.setting.acc;
 		let ip = gateway.setting.ip;
 		let reachable = gateway.reachable;
-
+		console.log(numOfClients);
 		if (!numOfClients) {
 			output[mac] = {ip: ip, acc: acc, reachable: reachable};
 		}
