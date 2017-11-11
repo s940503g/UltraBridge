@@ -13,15 +13,23 @@
     </style>
     <script>
         function editButtonOnClick () {
-            document.getElementById("input_acc").readOnly = false;
-            document.getElementById("input_pwd").readOnly = false;
-        }
-        function submitButtonOnClick () {
-            let acc_value = document.getElementById("input_acc").value ;
-            let pwd_value = document.getElementById("input_pwd").value;
-            if () {
+            document.getElementById("accTextField").readOnly = false;
+            document.getElementById("pwdTextField").readOnly = false;
+            document.getElementById("accTextField").value = "";
+            document.getElementById("pwdTextField").value = "";
 
+            document.getElementById("submitButton").hidden = false;
+            document.getElementById("cancelButton").hidden = false;
+            document.getElementById("editButton").hidden = true;
+        }
+        function formOnSubmit () {
+            if (!confirm('Are you sure?')) {
+                e.preventDefault();
+                window.location.href = '../';
             }
+        }
+        function cancelButtonOnClick () {
+            window.location.href = '../';
         }
     </script>
 </head>
@@ -30,27 +38,30 @@
     <div class="container">
         <%- include('partials/navbar') %>
         <div>
-            <h2><%= mac %></h2>
+            <h2>Zwave-Gateway: <%= mac %></h2>
             <form action="<%= mac %>/rebridge" method="post">
                 <p>
-                    <input type="button" name="rebidge" value="rebridge">
+                    <input type="button" name="rebidge" value="rebridge" />
                 </p>
             </form>
-            <form action="<%= mac %>/register" method="post">
+            <form action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()">
                 <p>
-                    Account: <input type="text" name="acc" placeholder="account" value="<%= acc %>" readonly/>
+                    Account: <input id="accTextField" type="text" name="acc"  value="<%= acc %>" readonly />
                 </p>
                 <p>
-                    Password: <input type="password" name="pwd" placeholder="password" value="" readonly/>
+                    Password: <input id="pwdTextField" type="password" name="pwd" value="password" readonly />
                 </p>
                 <p>
-                    <input type="submit" value="Submit" />
-                    <input type="button" value="edit" onclick="editButtonOnClick()"/>
+                    <input id="editButton" type="button" value="edit" onclick="editOnclick()" />
                 </p>
+                <p>
+                    <input id="submitButton" type="submit" value="Apply" autocomplete="off" hidden/>
+                    <input id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+                </p>
+                <hr>
                 <p>
                     <input type="submit" value="remove" formaction="<%= mac %>/remove"/>
                 </p>
-
             </form>
 
             <hr>
