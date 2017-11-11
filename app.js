@@ -114,10 +114,8 @@ app.post('/gateway/:mac/register', (req, res) => {
 		GatewayManager.scan();
 		let {mac} = req.params;
 		let {acc, pwd} = req.body;
-		let info = GatewayInfo.load(mac);
 		let gateway = GatewayManager.publishedGateway[mac];
 
-		if (!info) throw `Can't find gateway ${mac}. Please check or rescan.`;
 		if (acc && pwd) {
 			gateway.BridgeGateway(acc, pwd, (err) => {
 				if (err) throw 'Error: Wrong account or password.';
