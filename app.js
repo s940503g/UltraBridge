@@ -132,7 +132,18 @@ app.post('/gateway/:mac/register', (req, res) => {
 			res.status(400).send(e);
 		}
 	};
-})
+});
+
+app.post('/gateway/:mac/remove', (req, res) => {
+	try {
+		let {mac} = req.query;
+		GatewayManager.remove(mac);
+		res.redirect('/');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
 
 app.get('/', (req, res) => {
 	let gateway_list = [];
@@ -152,27 +163,27 @@ app.get('/', (req, res) => {
 })
 
 app.get('/gateway/:mac', (req, res) => {
-	for (var mac in GatewayManager.publishedGateway) {
-		if (mac == req.params.mac) {
-			let gateway = GatewayManager.publishedGateway[mac];
-			let clients = gateway.Bridge._accessoryInfo.pairedClients;
-			let acc = gateway.setting.acc;
-	 		let reachable = gateway.reachable;
-	 		let ip = gateway.setting.ip;
-	 		let pwd = gateway.setting.pwd;
-	 		let isRegistered = acc && pwd ? true:false;
+	try {
+		let gateway = GatewayManager.publishedGateway[mac];
+		let clients = gateway.Bridge._accessoryInfo.pairedClients;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+		let ip = gateway.setting.ip;
+		let pwd = gateway.setting.pwd;
+		let isRegistered = acc && pwd ? true:false;
 
-	 		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
+		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
 
-	 		for (var client in clients) {
-	 			content[mac].paired = true;
-	 			break;
-	 		}
-
-			res.render('gateway', content);
+		for (var client in clients) {
+			content[mac].paired = true;
+			break;
 		}
+
+		res.render('gateway', content);
+	} catch (e) {
+		res.status(400).send(e);
 	}
-})
+});
 
 console.log('Listening on port 3000');
 
