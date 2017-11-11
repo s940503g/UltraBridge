@@ -28,38 +28,32 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="list-group">
-                  <!-- loop over blog posts and render them -->
-                    <div class="list-group">
-                      <!-- loop over blog posts and render them -->
-                      <% gateway_list.forEach((gateway) => { %>
-                        <a href="/gateway/<%= gateway.mac %>" class="list-group-item">
-                          <h3 class="list-group-item-heading">Zwave-Gateway: <%= gateway.mac %></h4>
-                          <p class="list-group-item-text
-                          <% if (gateway.is_registered) { %>
-                                text-success
-                               <% } else { %>
-                                text-danger
-                               <% } %>">registered:<%= gateway.is_registered %></p>
-                           <p class="list-group-item-text
-                           <% if (gateway.paired) { %>
-                                 text-success
-                                <% } else { %>
-                                 text-danger
-                                <% } %>
-                                ">paired:<%= gateway.paired %></p>
-                            <p class="list-group-item-text
-                            <% if (gateway.reachable) { %>
-                                  text-success
-                                 <% } else { %>
-                                  text-danger
-                                 <% } %>
-                                 ">reachable:<%= gateway.reachable %></p>
-                             <p class="list-group-item-text text-dark">ip address:<%= gateway.ip %></p>
-                        </a>
-                      <% }) %>
-                    </div>
-                </div>
+              <% gateway_list.forEach((gateway) => { %>
+                <a href="/gateway/<%= gateway.mac %>" class="list-group-item">
+                  <h3 class="list-group-item-heading">Zwave-Gateway: <%= gateway.mac %></h4>
+                  <p class="list-group-item-text
+                  <% if (gateway.is_registered) { %>
+                        text-success
+                       <% } else { %>
+                        text-danger
+                       <% } %>">registered:<%= gateway.is_registered %></p>
+                   <p class="list-group-item-text
+                   <% if (gateway.paired) { %>
+                         text-success
+                        <% } else { %>
+                         text-danger
+                        <% } %>
+                        ">paired:<%= gateway.paired %></p>
+                    <p class="list-group-item-text
+                    <% if (gateway.reachable) { %>
+                          text-success
+                         <% } else { %>
+                          text-danger
+                         <% } %>
+                         ">reachable:<%= gateway.reachable %></p>
+                     <p class="list-group-item-text text-dark">ip address:<%= gateway.ip %></p>
+                </a>
+              <% }) %>
             </div>
         </div>
         <%- include('partials/footer') %>
