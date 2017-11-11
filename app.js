@@ -175,7 +175,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/gateway/:mac', (req, res) => {
-	console.log('XXXXXXX');
 	try {
 		let mac = req.params.mac;
 		let gateway = GatewayManager.publishedGateway[mac];
