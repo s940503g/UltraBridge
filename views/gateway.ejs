@@ -11,6 +11,12 @@
             padding-bottom: 20px;
         }
     </style>
+    <script>
+        function editButtonOnClick () {
+            document.getElementById("input_acc").readOnly = false;
+            document.getElementById("input_pwd").readOnly = false;
+        }
+    </script>
 </head>
 
 <body>
@@ -26,9 +32,13 @@
                     Password: <input type="password" name="pwd" placeholder="password" value="" />
                 </p>
                 <p>
-                    <input type="password" name="mac" hidden="true" value="" />
                     <input type="submit" value="Submit" />
+                    <input type="button" value="edit" onclick="editButtonOnClick()"/>
                 </p>
+                <p>
+                    <input type="submit" value="remove" formaction="<%= mac %>/remove"/>
+                </p>
+
             </form>
 
             <hr>
