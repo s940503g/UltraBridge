@@ -34,7 +34,7 @@
                       <!-- loop over blog posts and render them -->
                       <% gateway_list.forEach((gateway) => { %>
                         <a href="/gateway/<%= gateway.mac %>" class="list-group-item">
-                          <h3 class="list-group-item-heading"><%= gateway.mac %></h4>
+                          <h3 class="list-group-item-heading">Zwave-Gateway: <%= gateway.mac %></h4>
                           <p class="list-group-item-text
                           <% if (gateway.is_registered) { %>
                                 text-success
