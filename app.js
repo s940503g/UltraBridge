@@ -111,7 +111,6 @@ web interface
 
 app.post('/gateway/:mac/register', (req, res) => {
 	try {
-		GatewayManager.scan();
 		let {mac} = req.params;
 		let {acc, pwd} = req.body;
 		let gateway = GatewayManager.publishedGateway[mac];
