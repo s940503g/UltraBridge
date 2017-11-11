@@ -136,7 +136,7 @@ app.post('/gateway/:mac/register', (req, res) => {
 
 app.post('/gateway/:mac/rebridge', (req, res) => {
 	try {
-		let {mac} = req.query;
+		let {mac} = req.params;
 		let gateway = GatewayManager.publishedGateway[mac];
 		gateway.rebridgeGateway();
 		res.redirect('/');
@@ -148,7 +148,7 @@ app.post('/gateway/:mac/rebridge', (req, res) => {
 
 app.post('/gateway/:mac/remove', (req, res) => {
 	try {
-		let {mac} = req.query;
+		let {mac} = req.params;
 		GatewayManager.remove(mac);
 		res.redirect('/');
 	} catch (e) {
@@ -177,22 +177,11 @@ app.get('/', (req, res) => {
 app.get('/gateway/:mac', (req, res) => {
 	console.log('XXXXXXX');
 	try {
+		let mac = req.params.mac;
 		let gateway = GatewayManager.publishedGateway[mac];
-		let clients = gateway.Bridge._accessoryInfo.pairedClients;
 		let acc = gateway.setting.acc;
-		let reachable = gateway.reachable;
-		let ip = gateway.setting.ip;
-		let pwd = gateway.setting.pwd;
-		let isRegistered = acc && pwd ? true:false;
 
-		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
-
-		for (var client in clients) {
-			content[mac].paired = true;
-			break;
-		}
-
-		res.render('gateway', content);
+		res.render('gateway', {mac: mac, acc:acc});
 	} catch (e) {
 		res.status(400).send(e);
 	}
