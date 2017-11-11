@@ -175,6 +175,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/gateway/:mac', (req, res) => {
+	console.log('XXXXXXX');
 	try {
 		let gateway = GatewayManager.publishedGateway[mac];
 		let clients = gateway.Bridge._accessoryInfo.pairedClients;
