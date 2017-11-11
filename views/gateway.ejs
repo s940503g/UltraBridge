@@ -39,11 +39,11 @@
         <%- include('partials/navbar') %>
         <div>
             <h2>Zwave-Gateway: <%= mac %></h2>
-            <form action="<%= mac %>/rebridge" method="post">
+            <!-- <form action="<%= mac %>/rebridge" method="post">
                 <p>
                     <input type="button" name="rebidge" value="rebridge" />
                 </p>
-            </form>
+            </form> -->
             <form action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()">
                 <p>
                     Account: <input id="accTextField" type="text" name="acc"  value="<%= acc %>" readonly />
@@ -55,7 +55,7 @@
                     <input id="editButton" type="button" value="edit" onclick="editOnclick()" />
                 </p>
                 <p>
-                    <input id="submitButton" type="submit" value="Apply" autocomplete="off" hidden/>
+                    <input id="submitButton" type="submit" value="Apply" hidden/>
                     <input id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
                 </p>
                 <hr>
