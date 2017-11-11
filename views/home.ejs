@@ -39,20 +39,20 @@
                           <% if (gateway.is_registered) { %>
                                 text-success
                                <% } else { %>
-                                text-muted
+                                text-danger
                                <% } %>">registered:<%= gateway.is_registered %></p>
                            <p class="list-group-item-text
                            <% if (gateway.paired) { %>
                                  text-success
                                 <% } else { %>
-                                 text-muted
+                                 text-danger
                                 <% } %>
                                 ">paired:<%= gateway.paired %></p>
                             <p class="list-group-item-text
                             <% if (gateway.reachable) { %>
                                   text-success
                                  <% } else { %>
-                                  text-muted
+                                  text-danger
                                  <% } %>
                                  ">reachable:<%= gateway.reachable %></p>
                              <p class="list-group-item-text text-dark">ip address:<%= gateway.ip %></p>
