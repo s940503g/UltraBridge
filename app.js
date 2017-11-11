@@ -134,6 +134,18 @@ app.post('/gateway/:mac/register', (req, res) => {
 	};
 });
 
+app.post('/gateway/:mac/rebridge', (req, res) => {
+	try {
+		let {mac} = req.query;
+		let gateway = GatewayManager.publishedGateway[mac];
+		gateway.rebridgeGateway();
+		res.redirect('/');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
 app.post('/gateway/:mac/remove', (req, res) => {
 	try {
 		let {mac} = req.query;
