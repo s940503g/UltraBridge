@@ -170,7 +170,7 @@ app.get('/', (req, res) => {
 
 		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
 		for (var client in clients) {
-			output[mac].paired = true;
+			content.paired = true;
 			break;
 		}
 		gateway_list.push(content);
