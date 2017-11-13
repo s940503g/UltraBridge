@@ -16,6 +16,11 @@
           margin-top: 10px;
         }
     </style>
+    <script type="text/javascript">
+        function rescanButtonOnClick () {
+            location.reload();
+        }
+    </script>
 </head>
 
 <body>
@@ -24,6 +29,9 @@
         <div class="jumbotron">
             <h1>UltraBridge</h1>
             <p class="lead">Select gateway below and submit account and password to setup UltraBridge.</p>
+            <p>
+                <input type="button" value="rescan" onclick="rescanButtonOnClick()"/>
+            </p>
         </div>
 
         <div class="row">
