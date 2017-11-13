@@ -46,21 +46,21 @@
             </form> -->
             <form action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()">
                 <p>
-                    Account: <input id="accTextField" type="text" name="acc" value="<%= acc %>" readonly />
+                    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="<%= acc %>" readonly />
                 </p>
                 <p>
-                    Password: <input id="pwdTextField" type="password" name="pwd" value="" readonly />
+                    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
                 </p>
                 <p>
-                    <input id="editButton" type="button" value="edit" onclick="editButtonOnClick()" />
+                    <input class="btn btn-default" id="editButton" type="button"  value="edit" onclick="editButtonOnClick()" />
                 </p>
                 <p>
-                    <input id="submitButton" type="submit" value="Apply" hidden/>
-                    <input id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+                    <input class="btn btn-default" id="submitButton" type="submit" value="Apply" hidden/>
+                    <input class="btn btn-default" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
                 </p>
                 <hr>
                 <p>
-                    <input type="submit" value="remove" formaction="<%= mac %>/remove"/>
+                    <input class="btn btn-default" type="submit" value="remove" formaction="<%= mac %>/remove"/>
                 </p>
             </form>
 
