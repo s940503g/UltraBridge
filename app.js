@@ -105,7 +105,7 @@ app.post('/gateway/:mac/register', (req, res) => {
 
 		if (acc && pwd) {
 			gateway.BridgeGateway(acc, pwd, (err) => {
-				if (err) throw 'Error: Wrong account or password.';
+				if (err) console.log(err);
 			});
 		}
 		res.redirect('/');

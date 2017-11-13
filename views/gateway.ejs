@@ -3,13 +3,26 @@
 
 <head>
     <meta charset="utf-8">
-    <title>UltraBridge</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <title>HomeBridge</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
     <style>
+	html {font-size: 2.4em;}
+
         body {
+		font-size: 100%;
             padding-top: 20px;
             padding-bottom: 20px;
         }
+	form {padding-top: 20px;}
+	h2, p {font-size: 150%;}
+	.form-control {
+		height: 75px;
+		font-size: 100%;
+	}
+	input, button {
+		font-size: 150%;
+		height: 100px;
+	}
     </style>
     <script>
         function editButtonOnClick () {
@@ -20,6 +33,9 @@
 
             document.getElementById("submitButton").hidden = false;
             document.getElementById("cancelButton").hidden = false;
+            
+	    document.getElementById("form").hidden = false;
+
             document.getElementById("editButton").hidden = true;
         }
         function formOnSubmit () {
@@ -34,40 +50,24 @@
     </script>
 </head>
 
-<body>
-    <div class="container">
-        <%- include('partials/navbar') %>
-        <div>
-            <h2>Zwave-Gateway: <%= mac %></h2>
-            <!-- <form action="<%= mac %>/rebridge" method="post">
-                <p>
-                    <input type="button" name="rebidge" value="rebridge" />
-                </p>
-            </form> -->
-            <form class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()">
-                <p>
-                    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="<%= acc %>" readonly />
-                </p>
-                <p>
-                    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
-                </p>
-                <p>
-                    <input class="btn btn-default" id="editButton" type="button"  value="edit" onclick="editButtonOnClick()" />
-                </p>
-                <p>
-                    <input class="btn btn-default" id="submitButton" type="submit" value="Apply" hidden/>
-                    <input class="btn btn-default" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
-                </p>
-                <hr>
-                <p>
-                    <input class="btn btn-default" type="submit" value="remove" formaction="<%= mac %>/remove"/>
-                </p>
-            </form>
+<body class="container">
+<%- include('partials/navbar') %>
+    <h2>Gateway: <%= mac %></h2>
+    <button class="btn-outline-danger float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
+    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()" hidden>
+	<p>
+	    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="<%= acc %>" readonly />
+	</p>
+	<p>
+	    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
+	</p>
 
-            <hr>
-        </div>
-        <%- include('partials/footer') %>
-    </div>
+	<div class="controls controls-row row-fluid">
+	    <input class="btn-primary btn-block" id="submitButton" type="submit" value="apply" hidden/>
+	    <input class="btn-secondary btn-block" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+	</div>
+    </form>
+
 </body>
 
 </html>
