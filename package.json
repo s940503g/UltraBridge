@@ -36,6 +36,7 @@
     "forever": "^0.15.3",
     "hap-nodejs": "^0.4.36",
     "is-reachable": "^2.3.3",
+    "jquery": "^3.2.1",
     "json-query": "^2.2.2",
     "jsonpath": "^1.0.0",
     "macaddress": "^0.2.8",
