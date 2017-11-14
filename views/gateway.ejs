@@ -30,14 +30,11 @@
         function editButtonOnClick () {
             document.getElementById("accTextField").readOnly = false;
             document.getElementById("pwdTextField").readOnly = false;
-            document.getElementById("accTextField").value = "";
-            document.getElementById("pwdTextField").value = "";
 
             document.getElementById("submitButton").hidden = false;
             document.getElementById("cancelButton").hidden = false;
 
-	    document.getElementById("form").hidden = false;
-
+            document.getElementById("form").hidden = false;
             document.getElementById("editButton").hidden = true;
         }
         function formOnSubmit () {
@@ -47,7 +44,14 @@
             }
         }
         function cancelButtonOnClick () {
-            window.location.href = '../';
+            document.getElementById("accTextField").readOnly = !false;
+            document.getElementById("pwdTextField").readOnly = !false;
+
+            document.getElementById("submitButton").hidden = !false;
+            document.getElementById("cancelButton").hidden = !false;
+
+            document.getElementById("form").hidden = !false;
+            document.getElementById("editButton").hidden = !true;
         }
     </script>
 </head>
