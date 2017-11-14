@@ -146,7 +146,7 @@ app.get('/', (req, res) => {
 		let pwd = gateway.setting.pwd;
 		let isRegistered = acc && pwd ? true:false;
 
-		let content = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac};
+		let content = {ip: ip, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac, model: model};
 		for (var client in clients) {
 			content.paired = true;
 			break;
@@ -161,8 +161,9 @@ app.get('/gateway/:mac', (req, res) => {
 		let mac = req.params.mac;
 		let gateway = GatewayManager.publishedGateway[mac];
 		let acc = gateway.setting.acc;
+		let model = gateway.model;
 
-		res.render('gateway', {mac: mac, acc:acc});
+		res.render('gateway', {mac: mac, acc:acc, model: model});
 	} catch (e) {
 		res.status(400).send(e);
 	}
