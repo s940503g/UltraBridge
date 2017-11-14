@@ -36,7 +36,7 @@
     <div class="list-group">
       <% gateway_list.forEach(function(gateway){ %>
 	<a href="/gateway/<%= gateway.mac %>" class="list-group-item list-group-item-action flex-column align-items-start">
-		<h5 class=""mb-1><%=model%> <small><%= gateway.mac %></small></h5>
+		<h5 class=""mb-1><%=gateway.model%> <small><%= gateway.mac %></small></h5>
 	  <ul>
 		  <li>
 	  		ip address: <%= gateway.ip %>
