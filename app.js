@@ -145,6 +145,7 @@ app.get('/', (req, res) => {
 		let ip = gateway.setting.ip;
 		let pwd = gateway.setting.pwd;
 		let isRegistered = acc && pwd ? true:false;
+		let model = gateway.model;
 
 		let content = {ip: ip, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac, model: model};
 		for (var client in clients) {
