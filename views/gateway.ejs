@@ -25,7 +25,7 @@
         function formOnSubmit (e) {
             if (!confirm('Are you sure?')) {
                 e.preventDefault();
-                window.location.href = '../';
+                cancelButtonOnClick();
             }
         }
         function cancelButtonOnClick () {
