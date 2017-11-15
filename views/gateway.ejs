@@ -45,10 +45,10 @@
 <%- include('partials/navbar') %>
     <h2><%=model%> <%= mac %></h2>
     <div class="card border-dark mb-3">
-	    <div class="card-header">Setting</div>
+	    <div class="card-header">Register</div>
 	    <div class="card-body text-dark">
 		    <p>
-		    	Account and password of gateway.
+		    	Set gateway account and password to enable Homebridge bridging devices to Apple HomeKit.
 		    </p>
 		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
 		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()" hidden>
@@ -70,7 +70,7 @@
     <div class="card border-danger mb-3">
 	      <div class="card-header">Danger Zone</div>
 	      <div class="card-body text-danger">
-		<h4 class="card-title">Remove identify cache.</h4>
+		<p>If you unpired gateway on iOS Home app and can't repaired again, use remove button will recover gateway into initial state.</p>
 	        <p class="card-text">
 		<form action="<%=mac%>/remove" method="post">
 			<input class="btn btn-danger" type="submit" onsubmit="formOnSubmit()" value="remove" />
