@@ -134,6 +134,11 @@ app.post('/gateway/:mac/remove', (req, res) => {
 	}
 });
 
+app.post('/scan', (req, res) => {
+	GatewayManager.scan();
+	res.redirect('/');
+});
+
 app.get('/', (req, res) => {
 	GatewayManager.scan();
 	let gateway_list = [];
