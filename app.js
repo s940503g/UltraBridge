@@ -140,7 +140,6 @@ app.post('/scan', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	GatewayManager.scan();
 	let gateway_list = [];
 	for (var mac in GatewayManager.publishedGateway) {
 		let gateway = GatewayManager.publishedGateway[mac];
