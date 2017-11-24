@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <title>HomeBridge</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+	form {padding-top: 20px;}
+    </style>
+    <script>
+        function editButtonOnClick () {
+            document.getElementById("accTextField").readOnly = false;
+            document.getElementById("pwdTextField").readOnly = false;
+
+            document.getElementById("submitButton").hidden = false;
+            document.getElementById("cancelButton").hidden = false;
+
+            document.getElementById("form").hidden = false;
+            document.getElementById("editButton").hidden = true;
+        }
+        function formOnSubmit () {
+            if (!confirm('Are you sure?')) {
+                e.preventDefault();
+                window.location.href = '../';
+            }
+        }
+        function cancelButtonOnClick () {
+            document.getElementById("accTextField").readOnly = !false;
+            document.getElementById("pwdTextField").readOnly = !false;
+
+            document.getElementById("submitButton").hidden = !false;
+            document.getElementById("cancelButton").hidden = !false;
+
+            document.getElementById("form").hidden = !false;
+            document.getElementById("editButton").hidden = !true;
+        }
+    </script>
+</head>
+
+<body class="container-fluid">
+<%- include('partials/navbar') %>
+    <h2><%=model%> <%= mac %></h2>
+    <div class="card border-dark mb-3">
+	    <div class="card-header">Setting</div>
+	    <div class="card-body text-dark">
+		    <p>
+		    	Account and password of gateway.
+		    </p>
+		    <button class="btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
+		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()" hidden>
+			<p>
+			    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="" readonly />
+			</p>
+			<p>
+			    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
+			</p>
+
+			<div class="controls controls-row row-fluid">
+			    <input class="btn-primary btn-block" id="submitButton" type="submit" value="apply" hidden/>
+			    <input class="btn-secondary btn-block" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+			</div>
+		    </form>
+	    </div>
+    </div>
+
+    <div class="card border-danger mb-3">
+	      <div class="card-header">Danger Zone</div>
+	      <div class="card-body text-danger">
+		<h4 class="card-title">Remove identify cache.</h4>
+	        <p class="card-text">
+		<form action="<%=mac%>/remove" method="post">
+			<input class="btn-danger" type="submit" onsubmit="formOnSubmit()" value="remove" />
+		</form>
+		</p>
+	      </div>
+    </div>
+
+</body>
+
+</html>

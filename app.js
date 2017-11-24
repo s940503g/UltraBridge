@@ -7,6 +7,7 @@ const http = require('http');
 const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
 const GatewayManager = require("./lib/GatewayManager.js");
+const bodyParser = require('body-parser');
 
 hap_nodejs.init();
 
@@ -15,7 +16,15 @@ var app = express();
 GatewayManager.on();
 GatewayManager.scan();
 
-app.get('/scan', function (req, res) {
+app.set('view engine', 'ejs')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/', express.static(__dirname + '/views')); // redirect root
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
+app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+
+app.get('/api/scan', function (req, res) {
 	GatewayManager.scan();
 	res.status(200).send('Success.\n');
 });
@@ -23,27 +32,25 @@ app.get('/scan', function (req, res) {
 app.get('/show', function (req, res) {
 	var output = {};
 	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].setting.ip;
-		output[mac] = {ip: ip};
-	}
-	res.status(200).send(output);
-});
+		let gateway = GatewayManager.publishedGateway[mac];
+		let clients = gateway.Bridge._accessoryInfo.pairedClients;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+		let ip = gateway.setting.ip;
+		let pwd = gateway.setting.pwd;
+		let isRegistered = acc && pwd ? true:false;
 
-app.get('/show_unregistered', function (req, res) {
-	var output = {};
-	for (var mac in GatewayManager.publishedGateway) {
-		let ip = GatewayManager.publishedGateway[mac].setting.ip;
-		let acc = GatewayManager.publishedGateway[mac].setting.acc;
-		let pwd = GatewayManager.publishedGateway[mac].setting.pwd;
-		
-		if (acc && pwd) {
-			output[mac] = {ip: ip, acc:acc};
+		output[mac] = {ip: ip, acc: acc, reachable: reachable, paired: false, is_registered: isRegistered};
+
+		for (var client in clients) {
+			output[mac].paired = true;
+			break;
 		}
 	}
 	res.status(200).send(output);
 });
 
-app.get('/register', function (req, res) {
+app.get('/api/register', function (req, res) {
 	try {
 		GatewayManager.scan();
 		let {mac, acc, pwd} = req.query;
@@ -54,21 +61,24 @@ app.get('/register', function (req, res) {
 		if (acc && pwd) {
 			debug('')
 			gateway.BridgeGateway(acc, pwd, (err) => {
-				if (err) debug(err);
+				if (err) throw 'Error: Wrong account or password.';
 			});
 		}
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
-		res.status(400).send(e);
+		if (e == 'Wrong account or password.') {
+			res.status(401).send(e);
+		} else {
+			res.status(400).send(e);
+		}
 	}
 });
 
-app.get('/removeDevices', function (req, res) {
+app.get('/api/remove', function (req, res) {
 	try {
 		let {mac} = req.query;
-		let gateway = GatewayManager.publishedGateway[mac];
-		gateway.Bridge.removeAllBridgedAccessories();
+		GatewayManager.remove(mac);
 		res.status(200).send('Success.\n');
 	} catch (e) {
 		debug(e);
@@ -76,19 +86,7 @@ app.get('/removeDevices', function (req, res) {
 	}
 });
 
-app.get('/rebridge', function (req, res) {
-	try {
-		let {mac} = req.query;
-		let gateway = GatewayManager.publishedGateway[mac];
-		gateway.rebridgeGateway();
-		res.status(200).send('Success.\n');
-	} catch (e) {
-		debug(e);
-		res.status(400).send(e);
-	}
-});
-
-app.get('/clear', function (req, res) {
+app.get('/api/clear', function (req, res) {
 	try {
 		GatewayManager.clear();
 		GatewayManager.scan();
@@ -98,5 +96,80 @@ app.get('/clear', function (req, res) {
 		res.status(400).send(e);
 	}
 });
+
+/*
+web interface
+ */
+
+app.post('/gateway/:mac/register', (req, res) => {
+	try {
+		let {mac} = req.params;
+		let {acc, pwd} = req.body;
+		let gateway = GatewayManager.publishedGateway[mac];
+
+		if (acc && pwd) {
+			gateway.BridgeGateway(acc, pwd, (err) => {
+				if (err) console.log(err);
+			});
+		}
+		res.redirect('/');
+	} catch (e) {
+		debug(e);
+		if (e == 'Wrong account or password.') {
+			res.status(401).send(e);
+		} else {
+			res.status(400).send(e);
+		}
+	};
+});
+
+app.post('/gateway/:mac/remove', (req, res) => {
+	try {
+		let {mac} = req.params;
+		GatewayManager.remove(mac);
+		res.redirect('/');
+	} catch (e) {
+		debug(e);
+		res.status(400).send(e);
+	}
+});
+
+app.get('/', (req, res) => {
+	GatewayManager.scan();
+	let gateway_list = [];
+	for (var mac in GatewayManager.publishedGateway) {
+		let gateway = GatewayManager.publishedGateway[mac];
+		let clients = gateway.Bridge._accessoryInfo.pairedClients;
+		let acc = gateway.setting.acc;
+		let reachable = gateway.reachable;
+		let ip = gateway.setting.ip;
+		let pwd = gateway.setting.pwd;
+		let isRegistered = acc && pwd ? true:false;
+		let model = gateway.model;
+
+		let content = {ip: ip, reachable: reachable, paired: false, is_registered: isRegistered, mac: mac, model: model};
+		for (var client in clients) {
+			content.paired = true;
+			break;
+		}
+		gateway_list.push(content);
+	}
+	res.render('home', { gateway_list: gateway_list });
+})
+
+app.get('/gateway/:mac', (req, res) => {
+	try {
+		let mac = req.params.mac;
+		let gateway = GatewayManager.publishedGateway[mac];
+		let acc = gateway.setting.acc;
+		let model = gateway.model;
+
+		res.render('gateway', {mac: mac, acc:acc, model: model});
+	} catch (e) {
+		res.status(400).send(e);
+	}
+});
+
+console.log('Listening on port 3000');
 
 app.listen(3000);

@@ -1,0 +1,25 @@
+html {font-size: 1.24em;}
+
+body {
+font-size: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.container-fluid {
+    max-width: 50%;
+}
+@media only screen and (max-width: 768px) {
+    .container-fluid {
+        max-width: 75%;
+    }
+}
+@media only screen and (max-width: 480px) {
+    .container-fluid {
+        max-width: 100%;
+    }
+}
+@media only screen and (max-width: 320px) {
+    .container-fluid {
+        max-width: 100%;
+    }
+}
