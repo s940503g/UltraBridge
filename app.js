@@ -8,6 +8,7 @@ const express = require('express');
 const GatewayInfo = require('./lib/GatewayInfo.js');
 const GatewayManager = require("./lib/GatewayManager.js");
 const bodyParser = require('body-parser');
+var child_process = require('child_process');
 
 hap_nodejs.init();
 
@@ -134,12 +135,16 @@ app.post('/gateway/:mac/remove', (req, res) => {
 	}
 });
 
-app.post('/scan', (req, res) => {
-	GatewayManager.scan();
+app.post('/reboot', (req, res) => {
+	child_process.exec("forever restartall", function (err, stdout) {
+		if (err) console.log(err)
+		console.log(stdout);
+	});
 	res.redirect('/');
 });
 
 app.get('/', (req, res) => {
+	GatewayManager.scan();
 	let gateway_list = [];
 	for (var mac in GatewayManager.publishedGateway) {
 		let gateway = GatewayManager.publishedGateway[mac];
