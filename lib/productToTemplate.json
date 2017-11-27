@@ -13,5 +13,6 @@
 	"MiLocks": "ElectronicLock",
 	"Wireless Electronic Deadbolt Door Lock(Real Time Version)": "ElectronicLock",
 	"ZW4102 Curtain Control Module(Relay Output)": "ZW4102CurtainControlModule",
-	"Colour Led": "ColourLed"
+	"Colour Led": "ColourLed",
+	"Unknown: type=0500, id=0004": "WallSwitch"
 }
