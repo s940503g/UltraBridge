@@ -24,9 +24,10 @@
 <%- include('partials/navbar') %>
 <div class="jumbotron">
     <h1>HomeBridge</h1>
-    <p class="lead">Select gateway below and submit account and password to start bridging Zwave to Apple HomeKit.</p>
+    <p class="lead">點選並註冊Gateway帳號密碼以啟用HomeBridge的功能</p>
     <form action="/reboot" method="post">
-        <input class="btn btn-primary float-right" type="submit" value="reboot" />
+        <p>新裝置加入Gateway時請用[重新啟動]來重建HomeBridge對Gateway裡ZWAVE裝置的橋接功能</p>
+        <input class="btn btn-primary float-right" type="submit" value="重新啟動" />
     </form>
 </div>
     <div class="list-group">
@@ -42,21 +43,21 @@
 				text-success
 			       <% } else { %>
 				text-danger
-			       <% } %>">registered: <%= gateway.is_registered %>
+			       <% } %>">註冊狀態: <%= gateway.is_registered %>
 		</li>
 		<li class="
 			  <% if (gateway.paired) { %>
 				text-success
 			       <% } else { %>
 				text-danger
-			       <% } %>">paired: <%= gateway.paired %>
+			       <% } %>">與iOS配對: <%= gateway.paired %>
 		</li>
 		<li class="
 			  <% if (gateway.reachable) { %>
 				text-success
 			       <% } else { %>
 				text-danger
-			       <% } %>">reachable: <%= gateway.reachable %>
+			       <% } %>">連接狀態: <%= gateway.reachable %>
 		</li>
 	  </ul>
 	</a>

@@ -48,7 +48,7 @@
 	    <div class="card-header">Register</div>
 	    <div class="card-body text-dark">
 		    <p>
-		    	Set gateway account and password to enable Homebridge bridging devices to Apple HomeKit.
+		    	設定Gateway的Account與Password來啟用HomeBridge橋接器
 		    </p>
 		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
 		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit(event)" hidden>
@@ -70,10 +70,10 @@
     <div class="card border-danger mb-3">
 	      <div class="card-header">Danger Zone</div>
 	      <div class="card-body text-danger">
-		<p>If you unpired gateway on iOS Home app and can't repaired again, use remove button will recover gateway into initial state.</p>
+		<p>（重要）當此Gateway在HomeBridge所在網域外被移除，而導致無法再度被iOS配對時，才可以使用[刪除]按鈕來解除配對鎖定</p>
 	        <p class="card-text">
 		<form action="<%=mac%>/remove" method="post" onsubmit="formOnSubmit(event)">
-			<input class="btn btn-danger" type="submit" value="remove" />
+			<input class="btn btn-danger" type="submit" value="刪除" />
 		</form>
 		</p>
 	      </div>
