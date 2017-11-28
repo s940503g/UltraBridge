@@ -48,15 +48,15 @@
 	    <div class="card-header">Register</div>
 	    <div class="card-body text-dark">
 		    <p>
-		    	設定Gateway的Account與Password來啟用HomeBridge橋接器
+		    	HomeBridge需要Gateway的帳號與密碼才能橋接Gateway裡的裝置
 		    </p>
-		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
+		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">設定</button>
 		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit(event)" hidden>
 			<p>
-			    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="" readonly />
+			    帳號: <input class="form-control" id="accTextField" type="text" name="acc" value="" readonly />
 			</p>
 			<p>
-			    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
+			    密碼: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
 			</p>
 
 			<div class="controls controls-row row-fluid">

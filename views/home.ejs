@@ -24,7 +24,7 @@
 <%- include('partials/navbar') %>
 <div class="jumbotron">
     <h1>HomeBridge</h1>
-    <p class="lead">點選並註冊Gateway帳號密碼以啟用HomeBridge的功能</p>
+    <p class="lead">點選下方Gateway並設定帳號密碼讓Gateway的裝置成為HomeKit裝置</p>
     <form action="/reboot" method="post">
         <p>新裝置加入Gateway時請用[重新啟動]來重建HomeBridge對Gateway裡ZWAVE裝置的橋接功能</p>
         <input class="btn btn-primary float-right" type="submit" value="重新啟動" />
@@ -36,7 +36,7 @@
 		<h5 class=""mb-1><%=gateway.model%> <small><%= gateway.mac %></small></h5>
 	  <ul>
 		  <li>
-	  		ip address: <%= gateway.ip %>
+	  		IP位置: <%= gateway.ip %>
 		  </li>
 		  <li class="
 			  <% if (gateway.is_registered) { %>
