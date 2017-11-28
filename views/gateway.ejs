@@ -48,7 +48,7 @@
 	    <div class="card-header">Register</div>
 	    <div class="card-body text-dark">
 		    <p>
-		    	HomeBridge需要Gateway的帳號與密碼才能橋接Gateway裡的裝置
+		    	HomeBridge需要Gateway的帳號與密碼才能橋接Gateway裡的裝置。
 		    </p>
 		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">設定</button>
 		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit(event)" hidden>
@@ -60,8 +60,8 @@
 			</p>
 
 			<div class="controls controls-row row-fluid">
-			    <input class="btn btn-primary btn-block" id="submitButton" type="submit" value="apply" hidden/>
-			    <input class="btn btn-secondary btn-block" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+			    <input class="btn btn-primary btn-block" id="submitButton" type="submit" value="確認" hidden/>
+			    <input class="btn btn-secondary btn-block" id="cancelButton" type="button" value="取消" onclick="cancelButtonOnClick()" hidden/>
 			</div>
 		    </form>
 	    </div>
@@ -70,7 +70,7 @@
     <div class="card border-danger mb-3">
 	      <div class="card-header">Danger Zone</div>
 	      <div class="card-body text-danger">
-		<p>（重要）當此Gateway在HomeBridge所在網域外被移除，而導致無法再度被iOS配對時，才可以使用[刪除]按鈕來解除配對鎖定</p>
+		<p>（重要）當Gateway在HomeBridge所在網域外被移除，導致無法再度被iOS配對時，可以使用[刪除]按鈕來解除配對鎖定。</p>
 	        <p class="card-text">
 		<form action="<%=mac%>/remove" method="post" onsubmit="formOnSubmit(event)">
 			<input class="btn btn-danger" type="submit" value="刪除" />
