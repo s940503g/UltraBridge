@@ -136,7 +136,7 @@ app.post('/gateway/:mac/remove', (req, res) => {
 });
 
 app.post('/reboot', (req, res) => {
-	child_process.exec('su pi -c "forever restartall"', function (err, stdout) {
+	child_process.exec('forever restartall', function (err, stdout) {
 		if (err) console.log(err)
 		console.log(stdout);
 	});
