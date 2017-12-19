@@ -12,7 +12,7 @@
 	"ZP3111-5 4-in-1 Motion Sensor": "FourInOneMotoionSensor",
 	"MiLocks": "ElectronicLock",
 	"Wireless Electronic Deadbolt Door Lock(Real Time Version)": "ElectronicLock",
-	"ZW4102 Curtain Control Module(Relay Output)": "ZW4102CurtainControlModule",
+	"ZW4102 Curtain Control Module(Relay Output)": "Curtain",
 	"Colour Led": "ColourLed",
 	"Unknown: type=0500, id=0004": "WallSwitch"
 }
