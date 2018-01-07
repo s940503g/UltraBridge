@@ -2,12 +2,12 @@
 <html>
 
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <title>HomeBridge</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
 	form {padding-top: 20px;}
     </style>
@@ -22,10 +22,10 @@
             document.getElementById("form").hidden = false;
             document.getElementById("editButton").hidden = true;
         }
-        function formOnSubmit () {
+        function formOnSubmit (e) {
             if (!confirm('Are you sure?')) {
                 e.preventDefault();
-                window.location.href = '../';
+                cancelButtonOnClick();
             }
         }
         function cancelButtonOnClick () {
@@ -45,23 +45,23 @@
 <%- include('partials/navbar') %>
     <h2><%=model%> <%= mac %></h2>
     <div class="card border-dark mb-3">
-	    <div class="card-header">Setting</div>
+	    <div class="card-header">Register</div>
 	    <div class="card-body text-dark">
 		    <p>
-		    	Account and password of gateway.
+		    	HomeBridge需要Gateway的帳號與密碼才能橋接Gateway裡的裝置。
 		    </p>
-		    <button class="btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">edit</button>
-		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit()" hidden>
+		    <button class="btn btn-secondary float-right" id="editButton" type="button" onclick="editButtonOnClick()">設定</button>
+		    <form id="form" class="form-horizontal" action="<%= mac %>/register" method="post" onsubmit="formOnSubmit(event)" hidden>
 			<p>
-			    Account: <input class="form-control" id="accTextField" type="text" name="acc" value="" readonly />
+			    帳號: <input class="form-control" id="accTextField" type="text" name="acc" value="" readonly />
 			</p>
 			<p>
-			    Password: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
+			    密碼: <input class="form-control" id="pwdTextField" type="password" name="pwd" value="" readonly />
 			</p>
 
 			<div class="controls controls-row row-fluid">
-			    <input class="btn-primary btn-block" id="submitButton" type="submit" value="apply" hidden/>
-			    <input class="btn-secondary btn-block" id="cancelButton" type="button" value="cancel" onclick="cancelButtonOnClick()" hidden/>
+			    <input class="btn btn-primary btn-block" id="submitButton" type="submit" value="確認" hidden/>
+			    <input class="btn btn-secondary btn-block" id="cancelButton" type="button" value="取消" onclick="cancelButtonOnClick()" hidden/>
 			</div>
 		    </form>
 	    </div>
@@ -70,10 +70,10 @@
     <div class="card border-danger mb-3">
 	      <div class="card-header">Danger Zone</div>
 	      <div class="card-body text-danger">
-		<h4 class="card-title">Remove identify cache.</h4>
+		<p>（重要）當Gateway在HomeBridge所在網域外被移除，導致無法再度被iOS配對時，可以使用[刪除]按鈕來解除配對鎖定。</p>
 	        <p class="card-text">
-		<form action="<%=mac%>/remove" method="post">
-			<input class="btn-danger" type="submit" onsubmit="formOnSubmit()" value="remove" />
+		<form action="<%=mac%>/remove" method="post" onsubmit="formOnSubmit(event)">
+			<input class="btn btn-danger" type="submit" value="刪除" />
 		</form>
 		</p>
 	      </div>
