@@ -34,15 +34,9 @@
     "esutils": "^2.0.2",
     "express": "^4.16.2",
     "forever": "^0.15.3",
-<<<<<<< HEAD
-    "hap-nodejs": "^0.4.40",
-    "is-reachable": "^2.3.3",
-    "jquery": "^3.2.1",
-=======
     "hap-nodejs": "^0.4.41",
     "is-reachable": "^2.4.0",
     "jquery": "^3.3.1",
->>>>>>> ab50de87f1bda60a4790a2ba22426575b41b417b
     "json-query": "^2.2.2",
     "jsonpath": "^1.0.0",
     "macaddress": "^0.2.8",
