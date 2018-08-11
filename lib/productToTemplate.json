@@ -15,5 +15,6 @@
 	"ZW4102 Curtain Control Module(Relay Output)": "Curtain",
 	"Lamp Dimmer Module(Power Plug In Type)": "DimmerModule",
 	"Unknown: type=0500, id=0004": "WallSwitch",
-	"ZXT-120": "GeneralThermostat_v2"
+	"ZXT-120": "GeneralThermostat_v2",
+	"ZW4111-5 Z-Wave Curtain Control Module(Screw Terminal)": "Curtain_v2"
 }
