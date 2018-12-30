@@ -12,6 +12,8 @@
 	"ZL7434 In-Wall Switch": "WallSwitch",
 	"ZM1602-5 DC/AC Power Siren": "WallSwitch",
 	"ZL7432 In-Wall Switch, 2 Relays": "WallSwitch",
+	"PAN05 Switch 3KW": "WallSwitch",
+	"ZM1601-5 Wireless Siren and Strobe Alarm Battery Power": "WallSwitch",
 	"Door Sensor": "DoorSensor",
 	"Wireless Door/Window Sensor": "DoorSensor",
 	"Wireless Door/Window Sensor 2": "DoorSensor",
@@ -19,8 +21,11 @@
 	"ZL7261DE-5 Power Monitor": "PowerMonitor",
 	"Power Meter(Power Plug In Type)": "PowerMonitor",
 	"PAN11 Smart Energy Plug In Switch": "PowerMonitor",
+	"PAN10-2B In Wall Switch": "PowerMonitor",
+	"PAN15-1 Smart Energy Plug-in Switch": "PowerMonitor",
 	"ZD2301-5 Door 4 in 1 Sensor": "FourInOneSensor",
 	"ZD2201-5 4-in-1 Multi Sensor": "FourInOneSensor",
+	"PSM02 Slim Multi-Sensor": "FourInOneSensor",
 	"ZP3111-5 4-in-1 Motion Sensor": "FourInOneMotoionSensor",
 	"Wireless PIR Motion Sensor(Temperature Sensor Built-In)": "TwoInOneMotoionSensor",
 	"Wireless PIR Motion Sensor 2(Temperature Sensor Built-In)": "TwoInOneMotoionSensor",
@@ -31,5 +36,6 @@
 	"ZL7433 In-Wall Dimmer Module": "DimmerModule",
 	"Unknown: type=0500, id=0004": "WallSwitch",
 	"ZXT-120": "GeneralThermostat_v2",
-	"ZW4111-5 Z-Wave Curtain Control Module(Screw Terminal)": "Curtain_v2"
+	"ZW4111-5 Z-Wave Curtain Control Module(Screw Terminal)": "Curtain_v2",
+	"PAN08 Roller Shutter Controller": "Curtain_v2"
 }
