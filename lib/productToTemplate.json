@@ -18,6 +18,7 @@
 	"ZD2102-5 Wireless Door/Window Sensor": "DoorSensor",
 	"ZL7261DE-5 Power Monitor": "PowerMonitor",
 	"Power Meter(Power Plug In Type)": "PowerMonitor",
+	"PAN11 Smart Energy Plug In Switch": "PowerMonitor",
 	"ZD2301-5 Door 4 in 1 Sensor": "FourInOneSensor",
 	"ZD2201-5 4-in-1 Multi Sensor": "FourInOneSensor",
 	"ZP3111-5 4-in-1 Motion Sensor": "FourInOneMotoionSensor",
